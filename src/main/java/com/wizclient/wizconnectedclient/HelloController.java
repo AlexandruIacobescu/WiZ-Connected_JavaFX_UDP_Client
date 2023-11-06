@@ -1,18 +1,30 @@
 package com.wizclient.wizconnectedclient;
 
 import com.wizclient.wizconnectedclient.classes.Message;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.effect.Light;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class HelloController implements Initializable {
+    private HashMap<String,String> cBoxItem_Ip = new HashMap<>();
 
     @FXML
     private TitledPane tpAddNew, tpEdit, tpAutoscan;
@@ -81,7 +93,7 @@ public class HelloController implements Initializable {
         tfTempTabBrgValue.setText(Integer.toString((int) tempTabBrightnessSlider.getValue()));
     }
 
-    HashMap<String,String> cBoxItem_Ip = new HashMap<>();
+
 
     public void btnAddClick(){
         String ipAddress = tfIp.getText();
@@ -106,12 +118,53 @@ public class HelloController implements Initializable {
         }
     }
 
-    public void btnEditClick(){
+    public void btnEditClick(ActionEvent e) throws IOException {
         if(cBoxSelectLight.getValue() != null){
             String selectedItem = cBoxSelectLight.getValue();
+            // TODO: impl.
+            Stage modalStage = new Stage();
+            modalStage.initOwner(btnEdit.getScene().getWindow()); // Set the owner stage
+            modalStage.initModality(Modality.APPLICATION_MODAL); // Set the modality
 
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("EditLightDialog.fxml"));
+            Parent root;
+            try {
+                root = loader.load();
+                modalStage.initStyle(StageStyle.UTILITY);
+                modalStage.setTitle("Edit Light");
+                modalStage.setScene(new Scene(root));
+                modalStage.showAndWait(); // Show the modal stage and block access until it's closed
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }else{
             Message msg = new Message(lblEditLightMessage, 2000, "No light source selected.", Color.RED);
+            msg.show();
+        }
+    }
+
+    public void btnRemoveClick(){
+        if(cBoxSelectLight.getValue() != null){
+            String selectedItem = cBoxSelectLight.getValue();
+            cBoxItem_Ip.remove(selectedItem);
+            cBoxSelectLight.getItems().remove(selectedItem);
+            Message msg = new Message(lblEditLightMessage, 2000, "Item remove successfully.", Color.GREEN);
+            msg.show();
+        }else{
+            Message msg = new Message(lblEditLightMessage, 2000, "No light source selected.", Color.RED);
+            msg.show();
+        }
+    }
+
+    public void btnRemoveAllClick(){
+        if(!cBoxSelectLight.getItems().isEmpty()){
+            cBoxSelectLight.getItems().clear();
+            cBoxItem_Ip.clear();
+            Message msg = new Message(lblEditLightMessage, 2000, "All items removed successfully.", Color.GREEN);
+            msg.show();
+        }
+        else{
+            Message msg = new Message(lblEditLightMessage, 2000, "No items currently added.", Color.ORANGE);
             msg.show();
         }
     }
