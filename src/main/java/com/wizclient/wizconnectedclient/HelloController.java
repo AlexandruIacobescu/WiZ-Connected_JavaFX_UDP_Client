@@ -6,12 +6,9 @@ import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.effect.Light;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -118,10 +115,25 @@ public class HelloController implements Initializable {
         }
     }
 
+    public String getAlias(String expression){
+        String regex = "\\[(.*?)]";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(expression);
+
+        if (matcher.find()) {
+            return matcher.group(1); // Group 1 contains the captured alias
+        } else {
+            return null; // Return null if no alias is found
+        }
+    }
+
     public void btnEditClick(ActionEvent e) throws IOException {
         if(cBoxSelectLight.getValue() != null){
             String selectedItem = cBoxSelectLight.getValue();
             // TODO: impl.
+
+
+
             Stage modalStage = new Stage();
             modalStage.initOwner(btnEdit.getScene().getWindow()); // Set the owner stage
             modalStage.initModality(Modality.APPLICATION_MODAL); // Set the modality
@@ -130,10 +142,16 @@ public class HelloController implements Initializable {
             Parent root;
             try {
                 root = loader.load();
+                EditLightDialogController editLightDialogController = loader.getController();
+                editLightDialogController.getHashMap(cBoxItem_Ip);
+                editLightDialogController.getComboBox(cBoxSelectLight);
+                editLightDialogController.initIpTextField(cBoxItem_Ip.get(cBoxSelectLight.getValue()));
+                editLightDialogController.initAliasTextField(getAlias(cBoxSelectLight.getValue()));
                 modalStage.initStyle(StageStyle.UTILITY);
                 modalStage.setTitle("Edit Light");
                 modalStage.setScene(new Scene(root));
                 modalStage.showAndWait(); // Show the modal stage and block access until it's closed
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
