@@ -39,7 +39,7 @@ public class HelloController implements Initializable {
     private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage;
 
     @FXML
-    private ComboBox<String> cBoxSelectLight;
+    public ComboBox<String> cBoxSelectLight;
 
     @FXML
     public void sliderScroll(Event event) {
@@ -130,10 +130,6 @@ public class HelloController implements Initializable {
     public void btnEditClick(ActionEvent e) throws IOException {
         if(cBoxSelectLight.getValue() != null){
             String selectedItem = cBoxSelectLight.getValue();
-            // TODO: impl.
-
-
-
             Stage modalStage = new Stage();
             modalStage.initOwner(btnEdit.getScene().getWindow()); // Set the owner stage
             modalStage.initModality(Modality.APPLICATION_MODAL); // Set the modality
@@ -186,5 +182,8 @@ public class HelloController implements Initializable {
             msg.show();
         }
     }
+
+    // ----------- TEMPERATURE TAB -----------
+
 
 }

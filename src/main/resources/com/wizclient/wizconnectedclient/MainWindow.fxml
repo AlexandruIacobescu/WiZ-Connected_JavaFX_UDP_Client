@@ -10,6 +10,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
@@ -41,7 +42,48 @@
                 </Tab>
                   <Tab text="Color">
                     <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <Slider fx:id="colorTabBrightnessSlider" layoutX="611.0" layoutY="51.0" majorTickUnit="10.0" min="10.0" minorTickCount="5" onKeyPressed="#tempTabBrightnessSliderDragDetected" onMouseDragged="#tempTabBrightnessSliderDragDetected" onScroll="#sliderScroll" orientation="VERTICAL" prefHeight="321.0" prefWidth="14.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="10.0" />
+                              <TextField fx:id="brgValueColorTabTextField" layoutX="580.0" layoutY="379.0" onAction="#tfTempTabBrgValueTextChanged" prefWidth="62.0" />
+                              <Label layoutX="582.0" layoutY="14.0" text="Brightness:" />
+                              <Label layoutX="41.0" layoutY="43.0" text="R" textFill="RED">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="41.0" layoutY="81.0" text="G" textFill="LIME">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="41.0" layoutY="119.0" text="B" textFill="BLUE">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="41.0" layoutY="157.0" text="W" textFill="#a4a4a4">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Slider fx:id="rSlider" blockIncrement="1.0" layoutX="72.0" layoutY="44.0" majorTickUnit="10.0" max="255.0" min="1.0" minorTickCount="5" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" value="1.0" />
+                              <Slider fx:id="gSlider" blockIncrement="1.0" layoutX="72.0" layoutY="83.0" majorTickUnit="10.0" max="255.0" min="1.0" minorTickCount="5" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" value="1.0" />
+                              <Slider fx:id="bSlider" blockIncrement="1.0" layoutX="72.0" layoutY="121.0" majorTickUnit="10.0" max="255.0" min="1.0" minorTickCount="5" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" value="1.0" />
+                              <Slider fx:id="wSlider" blockIncrement="1.0" layoutX="72.0" layoutY="159.0" majorTickUnit="10.0" max="255.0" min="1.0" minorTickCount="5" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" value="1.0" />
+                              <TextField fx:id="rTextField" layoutX="466.0" layoutY="39.0" prefHeight="25.0" prefWidth="46.0" />
+                              <TextField fx:id="gTextField" layoutX="466.0" layoutY="77.0" prefHeight="25.0" prefWidth="46.0" />
+                              <TextField fx:id="bTextField" layoutX="466.0" layoutY="115.0" prefHeight="25.0" prefWidth="46.0" />
+                              <TextField fx:id="wTextField" layoutX="466.0" layoutY="153.0" prefHeight="25.0" prefWidth="46.0" />
+                              <ImageView fx:id="pictureBox" fitHeight="51.0" fitWidth="123.0" layoutX="389.0" layoutY="212.0" pickOnBounds="true" preserveRatio="true" />
+                              <ComboBox fx:id="colorTabSelectedLightComboBox" layoutX="40.0" layoutY="225.0" prefWidth="267.0" />
+                              <Label layoutX="40.0" layoutY="203.0" text="Select Light:" />
+                              <Label fx:id="colorTabMEssageLabel" layoutX="39.0" layoutY="396.0" text="Label" visible="false">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                           </children></AnchorPane>
                     </content>
                   </Tab>
                   <Tab text="Scenes">
