@@ -246,6 +246,31 @@ public class MainWindowController implements Initializable {
         }
     }
 
+    public void setBtnAddSelectedClick(){
+        boolean existingFound = false;
+        List<String> items = listViewFoundLights.getSelectionModel().getSelectedItems();
+        List<String> removableItems = new ArrayList<>();
+        if(listViewFoundLights.getItems() != null){
+            for(var item : items){
+                if(!cBoxItem_Ip.containsValue(item)){
+                    cBoxItem_Ip.put(String.format("[%s] [%s]", "", item), item);
+                    cBoxSelectLight.getItems().add(String.format("[%s] [%s]", "", item));
+                    removableItems.add(item);
+                }
+                else{
+                    existingFound = true;
+                }
+            }
+            updateAllComboBoxes(cBoxSelectLight);
+            if(existingFound){
+                new Message(lblAutoScanMessage, 2000, "Lights already added were skipped.", Color.ORANGE).show();
+            }
+            for(var item : removableItems){
+                listViewFoundLights.getItems().remove(item);
+            }
+        }
+    }
+
     // ----------- TEMPERATURE TAB -----------
 
 

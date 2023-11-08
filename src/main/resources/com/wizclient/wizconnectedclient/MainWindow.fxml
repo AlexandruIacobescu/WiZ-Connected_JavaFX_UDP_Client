@@ -138,7 +138,7 @@
                                           <ListView fx:id="listViewFoundLights" layoutX="320.0" layoutY="26.0" prefHeight="144.0" prefWidth="309.0" />
                                           <Label layoutX="320.0" layoutY="10.0" text="Lights Found:" />
                                           <Button fx:id="btnAddAll" layoutX="14.0" layoutY="55.0" mnemonicParsing="false" onAction="#btnAddAllClick" prefHeight="25.0" prefWidth="73.0" text="Add All" />
-                                          <Button fx:id="btnAddSelected" layoutX="96.0" layoutY="55.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="88.0" text="Add Selected" />
+                                          <Button fx:id="btnAddSelected" layoutX="96.0" layoutY="55.0" mnemonicParsing="false" onAction="#setBtnAddSelectedClick" prefHeight="25.0" prefWidth="88.0" text="Add Selected" />
                                           <Label fx:id="lblAutoScanMessage" layoutX="14.0" layoutY="98.0" text="Message" visible="false">
                                              <font>
                                                 <Font name="System Bold" size="12.0" />
