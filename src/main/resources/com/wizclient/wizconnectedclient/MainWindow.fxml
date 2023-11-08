@@ -24,18 +24,20 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="445.0" prefWidth="670.0">
                            <children>
-                              <Slider fx:id="tempTabBrightnessSlider" layoutX="611.0" layoutY="51.0" majorTickUnit="10.0" min="10.0" minorTickCount="5" onKeyPressed="#tempTabBrightnessSliderDragDetected" onMouseDragged="#tempTabBrightnessSliderDragDetected" onScroll="#sliderScroll" orientation="VERTICAL" prefHeight="321.0" prefWidth="14.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="10.0" />
+                              <Slider fx:id="tempTabBrightnessSlider" layoutX="611.0" layoutY="51.0" majorTickUnit="10.0" min="10.0" minorTickCount="5" onKeyPressed="#tempTabBrightnessSliderDragDetected" onMouseDragged="#tempTabBrightnessSliderDragDetected" onScroll="#brightnessSliderScroll" orientation="VERTICAL" prefHeight="321.0" prefWidth="14.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="10.0" />
                               <Label layoutX="582.0" layoutY="14.0" text="Brightness:" />
                               <TextField fx:id="tfTempTabBrgValue" layoutX="580.0" layoutY="379.0" onAction="#tfTempTabBrgValueTextChanged" prefWidth="62.0" />
-                              <Slider fx:id="tempSlider" blockIncrement="1.0" layoutX="33.0" layoutY="51.0" majorTickUnit="1.0" max="65.0" min="22.0" minorTickCount="1" onKeyPressed="#tempTabTempSliderDragDetected" onMouseDragged="#tempTabTempSliderDragDetected" onScroll="#sliderScroll" prefHeight="24.0" prefWidth="450.0" showTickMarks="true" snapToTicks="true" value="22.0" />
+                              <Slider fx:id="tempSlider" blockIncrement="1.0" layoutX="33.0" layoutY="51.0" majorTickUnit="1.0" max="65.0" min="22.0" minorTickCount="1" onKeyPressed="#tempTabTempSliderDragDetected" onMouseDragged="#tempTabTempSliderDragDetected" onScroll="#tempSliderScroll" prefHeight="24.0" prefWidth="450.0" showTickMarks="true" snapToTicks="true" value="22.0" />
                               <Label layoutX="33.0" layoutY="22.0" text="Temperature (K):" />
-                              <TextField fx:id="tempTabTempTextField" layoutX="483.0" layoutY="50.0" prefWidth="62.0" />
+                              <TextField fx:id="tempTabTempTextField" layoutX="483.0" layoutY="50.0" onAction="#tempTabTempTextFieldTextChanged" prefWidth="62.0" />
                               <ComboBox fx:id="tempTabSelectedLightComboBox" layoutX="33.0" layoutY="124.0" prefHeight="25.0" prefWidth="267.0" />
                               <Label layoutX="33.0" layoutY="98.0" text="Select Light:" />
                               <Label fx:id="tempTabMsgLabel" layoutX="37.0" layoutY="396.0" text="Message" visible="false">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font></Label>
+                              <Button fx:id="tempTabSetButton" layoutX="309.0" layoutY="124.0" mnemonicParsing="false" onAction="#tempSetButtonClick" prefHeight="25.0" prefWidth="89.0" text="Set" />
+                              <Button fx:id="tempTabTurnOffButton" layoutX="405.0" layoutY="124.0" mnemonicParsing="false" onAction="#tempTabTurnOffButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn Off" />
                            </children>
                         </AnchorPane>
                   </content>
@@ -44,7 +46,7 @@
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <Slider fx:id="colorTabBrightnessSlider" layoutX="611.0" layoutY="51.0" majorTickUnit="10.0" min="10.0" minorTickCount="5" onKeyPressed="#tempTabBrightnessSliderDragDetected" onMouseDragged="#tempTabBrightnessSliderDragDetected" onScroll="#sliderScroll" orientation="VERTICAL" prefHeight="321.0" prefWidth="14.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="10.0" />
+                              <Slider fx:id="colorTabBrightnessSlider" layoutX="611.0" layoutY="51.0" majorTickUnit="10.0" min="10.0" minorTickCount="5" onKeyPressed="#tempTabBrightnessSliderDragDetected" onMouseDragged="#tempTabBrightnessSliderDragDetected" onScroll="#brightnessSliderScroll" orientation="VERTICAL" prefHeight="321.0" prefWidth="14.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="10.0" />
                               <TextField fx:id="brgValueColorTabTextField" layoutX="580.0" layoutY="379.0" onAction="#tfTempTabBrgValueTextChanged" prefWidth="62.0" />
                               <Label layoutX="582.0" layoutY="14.0" text="Brightness:" />
                               <Label layoutX="41.0" layoutY="43.0" text="R" textFill="RED">

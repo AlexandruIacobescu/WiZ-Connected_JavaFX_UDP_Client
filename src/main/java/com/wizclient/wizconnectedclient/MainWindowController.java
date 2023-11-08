@@ -20,7 +20,7 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +37,7 @@ public class MainWindowController implements Initializable {
     private TextField tfTempTabBrgValue, tfIp, tfAlias, tempTabTempTextField;
 
     @FXML
-    private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnAddWithAlias, btnScan;
+    private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnAddWithAlias, btnScan, tempTabSetButton, tempTabTurnOffButton;
 
     @FXML
     private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage;
@@ -49,7 +49,7 @@ public class MainWindowController implements Initializable {
     public ListView<String> listViewFoundLights;
 
     @FXML
-    public void sliderScroll(Event event) {
+    public void brightnessSliderScroll(Event event) {
         if (event.getEventType() == javafx.scene.input.ScrollEvent.SCROLL) {
             javafx.scene.input.ScrollEvent scrollEvent = (javafx.scene.input.ScrollEvent) event;
 
@@ -65,6 +65,26 @@ public class MainWindowController implements Initializable {
 
             tempTabBrightnessSlider.setValue(newValue);
             tempTabBrightnessSliderDragDetected();
+        }
+    }
+
+    @FXML
+    public void tempSliderScroll(Event event){
+        if (event.getEventType() == javafx.scene.input.ScrollEvent.SCROLL) {
+            javafx.scene.input.ScrollEvent scrollEvent = (javafx.scene.input.ScrollEvent) event;
+
+            double minorTickUnit = tempSlider.getMinorTickCount();
+            double newValue = tempSlider.getValue();
+
+            // Adjust the value based on scroll direction and minor tick unit
+            if (scrollEvent.getDeltaY() > 0) {
+                newValue = Math.min(tempSlider.getMax(), newValue + minorTickUnit);
+            } else if (scrollEvent.getDeltaY() < 0) {
+                newValue = Math.max(tempSlider.getMin(), newValue - minorTickUnit);
+            }
+
+            tempSlider.setValue(newValue);
+            tempTabTempSliderDragDetected();
         }
     }
 
@@ -98,6 +118,7 @@ public class MainWindowController implements Initializable {
         tpAutoscan.setCollapsible(false);
 
         tfTempTabBrgValue.setText(Integer.toString((int) tempTabBrightnessSlider.getValue()));
+        tempTabTempTextField.setText(Integer.toString((int) tempSlider.getValue() * 100));
     }
 
 
@@ -273,5 +294,37 @@ public class MainWindowController implements Initializable {
 
     // ----------- TEMPERATURE TAB -----------
 
+    public void tempTabTempTextFieldTextChanged(){
+        try {
+            int value = Integer.parseInt(tempTabTempTextField.getText());
+            if (value < 2200 || value > 6500 || value % 100 != 0) {
+                Message msg = new Message(tempTabMsgLabel, 3800, "Only integers multiple of 100 in [2200, 6500] permitted for this field.", Color.RED);
+                msg.show();
+            } else {
+                tempSlider.setValue((double) value / 100);
+            }
+        } catch (NumberFormatException ex) {
+            Message msg = new Message(tempTabMsgLabel, 3800, "Only integers multiple of 100 in [2200, 6500] permitted for this field.", Color.RED);
+            msg.show();
+        }
+    }
 
+    public void tempSetButtonClick(){
+        if(tempTabSelectedLightComboBox.getValue() != null){
+            String ip = cBoxItem_Ip.get(tempTabSelectedLightComboBox.getValue());
+            Functions.setTemp(ip, Functions.DEFAULT_PORT, (int) (tempSlider.getValue() * 100));
+            Functions.setBrightness(ip, Functions.DEFAULT_PORT, (int) tempTabBrightnessSlider.getValue());
+        }else{
+            new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
+        }
+    }
+
+    public void tempTabTurnOffButtonClick(){
+        if(tempTabSelectedLightComboBox.getValue() != null){
+            String ip = cBoxItem_Ip.get(tempTabSelectedLightComboBox.getValue());
+            Functions.turnOff(ip, Functions.DEFAULT_PORT);
+        }else{
+            new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
+        }
+    }
 }
