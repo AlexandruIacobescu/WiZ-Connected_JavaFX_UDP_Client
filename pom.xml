@@ -61,7 +61,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                com.wizclient.wizconnectedclient/com.wizclient.wizconnectedclient.HelloApplication
+                                com.wizclient.wizconnectedclient/com.wizclient.wizconnectedclient.Application
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

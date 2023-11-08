@@ -1,6 +1,9 @@
 package com.wizclient.wizconnectedclient;
 
+import com.wizclient.wizconnectedclient.classes.AutoScan;
+import com.wizclient.wizconnectedclient.classes.Functions;
 import com.wizclient.wizconnectedclient.classes.Message;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -17,29 +20,33 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class HelloController implements Initializable {
+public class MainWindowController implements Initializable {
     private HashMap<String,String> cBoxItem_Ip = new HashMap<>();
 
     @FXML
     private TitledPane tpAddNew, tpEdit, tpAutoscan;
 
     @FXML
-    private Slider tempTabBrightnessSlider;
+    private Slider tempTabBrightnessSlider, tempSlider;
 
     @FXML
-    private TextField tfTempTabBrgValue, tfIp, tfAlias;
+    private TextField tfTempTabBrgValue, tfIp, tfAlias, tempTabTempTextField;
 
     @FXML
     private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnAddWithAlias, btnScan;
 
     @FXML
-    private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage;
+    private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage;
 
     @FXML
-    public ComboBox<String> cBoxSelectLight;
+    public ComboBox<String> cBoxSelectLight, tempTabSelectedLightComboBox;
+
+    @FXML
+    public ListView<String> listViewFoundLights;
 
     @FXML
     public void sliderScroll(Event event) {
@@ -80,6 +87,9 @@ public class HelloController implements Initializable {
         tfTempTabBrgValue.setText(Integer.toString((int) tempTabBrightnessSlider.getValue()));
     }
 
+    public void tempTabTempSliderDragDetected(){
+        tempTabTempTextField.setText(Integer.toString((int) tempSlider.getValue() * 100));
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -103,6 +113,7 @@ public class HelloController implements Initializable {
             if(!cBoxItem_Ip.containsKey(item) && !cBoxItem_Ip.containsValue(tfIp.getText())) {
                 cBoxItem_Ip.put(item, tfIp.getText());
                 cBoxSelectLight.getItems().add(item);
+                tempTabSelectedLightComboBox.getItems().add(item);
                 Message msg = new Message(lblAddLightMessage, 2000, "Light added successfully.", Color.GREEN);
                 msg.show();
             }else{
@@ -127,6 +138,11 @@ public class HelloController implements Initializable {
         }
     }
 
+    public void updateAllComboBoxes(ComboBox<String> comboBox){
+        tempTabSelectedLightComboBox.getItems().clear();
+        tempTabSelectedLightComboBox.getItems().addAll(comboBox.getItems());
+    }
+
     public void btnEditClick(ActionEvent e) throws IOException {
         if(cBoxSelectLight.getValue() != null){
             String selectedItem = cBoxSelectLight.getValue();
@@ -147,7 +163,8 @@ public class HelloController implements Initializable {
                 modalStage.setTitle("Edit Light");
                 modalStage.setScene(new Scene(root));
                 modalStage.showAndWait(); // Show the modal stage and block access until it's closed
-
+                // TODO: update other tabs' comboboxes
+                updateAllComboBoxes(cBoxSelectLight);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -162,6 +179,7 @@ public class HelloController implements Initializable {
             String selectedItem = cBoxSelectLight.getValue();
             cBoxItem_Ip.remove(selectedItem);
             cBoxSelectLight.getItems().remove(selectedItem);
+            tempTabSelectedLightComboBox.getItems().remove(selectedItem);
             Message msg = new Message(lblEditLightMessage, 2000, "Item remove successfully.", Color.GREEN);
             msg.show();
         }else{
@@ -173,6 +191,7 @@ public class HelloController implements Initializable {
     public void btnRemoveAllClick(){
         if(!cBoxSelectLight.getItems().isEmpty()){
             cBoxSelectLight.getItems().clear();
+            tempTabSelectedLightComboBox.getItems().clear();
             cBoxItem_Ip.clear();
             Message msg = new Message(lblEditLightMessage, 2000, "All items removed successfully.", Color.GREEN);
             msg.show();
@@ -180,6 +199,50 @@ public class HelloController implements Initializable {
         else{
             Message msg = new Message(lblEditLightMessage, 2000, "No items currently added.", Color.ORANGE);
             msg.show();
+        }
+    }
+
+    public void btnScanClick() {
+        Platform.runLater(() -> {
+            listViewFoundLights.getItems().clear();
+            lblAutoScanMessage.setVisible(true);
+            lblAutoScanMessage.setTextFill(Color.ORANGE);
+            lblAutoScanMessage.setText("Scanning...");
+            Thread thread = new Thread(() -> {
+                try {
+                    listViewFoundLights.getItems().addAll(AutoScan.scanNetwork(Functions.DEFAULT_PORT));
+                    new Message(lblAutoScanMessage, 2000, "Scanning completed.", Color.GREEN).show();
+                } catch (IOException e) {
+                    lblAutoScanMessage.setVisible(false);
+                    throw new RuntimeException(e);
+                }
+            });
+            thread.start();
+        });
+    }
+
+    public void btnAddAllClick(){
+        boolean existingFound = false;
+        List<String> items = listViewFoundLights.getItems();
+        List<String> removableItems = new ArrayList<>();
+        if(listViewFoundLights.getItems() != null){
+            for(var item : items){
+                if(!cBoxItem_Ip.containsValue(item)){
+                    cBoxItem_Ip.put(String.format("[%s] [%s]", "", item), item);
+                    cBoxSelectLight.getItems().add(String.format("[%s] [%s]", "", item));
+                    removableItems.add(item);
+                }
+                else{
+                    existingFound = true;
+                }
+            }
+            updateAllComboBoxes(cBoxSelectLight);
+            if(existingFound){
+                new Message(lblAutoScanMessage, 2000, "Lights already added were skipped.", Color.ORANGE).show();
+            }
+            for(var item : removableItems){
+                listViewFoundLights.getItems().remove(item);
+            }
         }
     }
 
