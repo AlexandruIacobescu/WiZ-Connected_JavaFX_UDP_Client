@@ -6,9 +6,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.*;
 
 public class AutoScan {
     public static String scanHost(String host, int port, String payload, int timeout) {
@@ -48,13 +46,12 @@ public class AutoScan {
         String payload = "{\"method\":\"registration\",\"params\":{\"register\":true}}";
 
         List<String> activeHosts = new ArrayList<>();
-        ExecutorService executor = Executors.newFixedThreadPool(254); // Adjust as needed
-
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(254); // Adjust as needed
         List<Future<String>> futures = new ArrayList<>();
 
         for (int i = 1; i <= 254; i++) { // Adjust the range as needed
             String host = String.format("%s.%s.%s.%d", ipParts[0], ipParts[1], ipParts[2], i);
-            Future<String> future = executor.submit(() -> scanHost(host, port, payload, 4000));
+            Future<String> future = executor.submit(() -> scanHost(host, port, payload, 2000));
             futures.add(future);
         }
 
