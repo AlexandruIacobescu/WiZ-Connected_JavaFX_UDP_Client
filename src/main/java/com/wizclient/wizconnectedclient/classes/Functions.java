@@ -53,7 +53,7 @@ public class Functions {
 
     public static void setTemp(String host, int port, int temperature){
         if(temperature < 2200 || temperature > 6500 || temperature % 100 != 0){
-            throw new IllegalArgumentException("Temperature argument must be integer multiple of 100 in [2200, 6500].");
+            throw new IllegalArgumentException("Temperature argument must be integer multiple of 100 in [2200, 6500]. given: " + temperature);
         }
         String payload = String.format("{\"method\":\"setPilot\",\"params\":{\"state\":true,\"temp\":%d}}", temperature);
         sendUdpPayload(host, port, payload);
@@ -61,6 +61,11 @@ public class Functions {
 
     public static void turnOff(String host, int port){
         String payload = "{\"method\":\"setPilot\",\"params\":{\"state\":false}}";
+        sendUdpPayload(host, port, payload);
+    }
+
+    public static void turnOn(String host, int port){
+        String payload = "{\"method\":\"setPilot\",\"params\":{\"state\":true}}";
         sendUdpPayload(host, port, payload);
     }
 }

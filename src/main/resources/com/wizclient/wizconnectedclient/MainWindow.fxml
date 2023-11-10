@@ -36,8 +36,9 @@
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font></Label>
-                              <Button fx:id="tempTabSetButton" layoutX="309.0" layoutY="124.0" mnemonicParsing="false" onAction="#tempSetButtonClick" prefHeight="25.0" prefWidth="89.0" text="Set" />
-                              <Button fx:id="tempTabTurnOffButton" layoutX="405.0" layoutY="124.0" mnemonicParsing="false" onAction="#tempTabTurnOffButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn Off" />
+                              <Button fx:id="tempTabSetButton" layoutX="309.0" layoutY="124.0" mnemonicParsing="false" onAction="#tempSetButtonClick" prefHeight="25.0" prefWidth="183.0" text="Set" />
+                              <Button fx:id="tempTabTurnOffButton" layoutX="408.0" layoutY="160.0" mnemonicParsing="false" onAction="#tempTabTurnOffButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn Off" />
+                              <Button fx:id="tempTabTurnOnButton" layoutX="310.0" layoutY="160.0" mnemonicParsing="false" onAction="#tempTabTurnOnButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn On" />
                            </children>
                         </AnchorPane>
                   </content>

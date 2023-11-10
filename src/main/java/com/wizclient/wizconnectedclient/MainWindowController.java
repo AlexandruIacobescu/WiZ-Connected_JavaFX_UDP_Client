@@ -1,6 +1,7 @@
 package com.wizclient.wizconnectedclient;
 
 import com.wizclient.wizconnectedclient.classes.AutoScan;
+import com.wizclient.wizconnectedclient.classes.DataParser;
 import com.wizclient.wizconnectedclient.classes.Functions;
 import com.wizclient.wizconnectedclient.classes.Message;
 import javafx.application.Platform;
@@ -37,7 +38,7 @@ public class MainWindowController implements Initializable {
     private TextField tfTempTabBrgValue, tfIp, tfAlias, tempTabTempTextField;
 
     @FXML
-    private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnAddWithAlias, btnScan, tempTabSetButton, tempTabTurnOffButton;
+    private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnAddWithAlias, btnScan, tempTabSetButton, tempTabTurnOffButton, tempTabTurnOnButton;
 
     @FXML
     private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage;
@@ -119,6 +120,14 @@ public class MainWindowController implements Initializable {
 
         tfTempTabBrgValue.setText(Integer.toString((int) tempTabBrightnessSlider.getValue()));
         tempTabTempTextField.setText(Integer.toString((int) tempSlider.getValue() * 100));
+
+        Map<String,String> lights = DataParser.getLightsFromJson("data\\lights.json");
+        for(var key : lights.keySet()){
+            String cBoxItem = String.format("[%s] [%s]", lights.get(key), key);
+            cBoxItem_Ip.put(cBoxItem,key);
+            cBoxSelectLight.getItems().add(cBoxItem);
+        }
+        updateAllComboBoxes(cBoxSelectLight);
     }
 
 
@@ -218,7 +227,7 @@ public class MainWindowController implements Initializable {
             msg.show();
         }
         else{
-            Message msg = new Message(lblEditLightMessage, 2000, "No items currently added.", Color.ORANGE);
+            Message msg = new Message(lblEditLightMessage, 2000, "No items currently added.", Color.ORANGERED);
             msg.show();
         }
     }
@@ -227,7 +236,7 @@ public class MainWindowController implements Initializable {
         Platform.runLater(() -> {
             listViewFoundLights.getItems().clear();
             lblAutoScanMessage.setVisible(true);
-            lblAutoScanMessage.setTextFill(Color.ORANGE);
+            lblAutoScanMessage.setTextFill(Color.DARKORANGE);
             lblAutoScanMessage.setText("Scanning...");
             Thread thread = new Thread(() -> {
                 try {
@@ -259,7 +268,7 @@ public class MainWindowController implements Initializable {
             }
             updateAllComboBoxes(cBoxSelectLight);
             if(existingFound){
-                new Message(lblAutoScanMessage, 2000, "Lights already added were skipped.", Color.ORANGE).show();
+                new Message(lblAutoScanMessage, 2000, "Lights already added were skipped.", Color.ORANGERED).show();
             }
             for(var item : removableItems){
                 listViewFoundLights.getItems().remove(item);
@@ -284,7 +293,7 @@ public class MainWindowController implements Initializable {
             }
             updateAllComboBoxes(cBoxSelectLight);
             if(existingFound){
-                new Message(lblAutoScanMessage, 2000, "Lights already added were skipped.", Color.ORANGE).show();
+                new Message(lblAutoScanMessage, 2000, "Lights already added were skipped.", Color.ORANGERED).show();
             }
             for(var item : removableItems){
                 listViewFoundLights.getItems().remove(item);
@@ -312,7 +321,7 @@ public class MainWindowController implements Initializable {
     public void tempSetButtonClick(){
         if(tempTabSelectedLightComboBox.getValue() != null){
             String ip = cBoxItem_Ip.get(tempTabSelectedLightComboBox.getValue());
-            Functions.setTemp(ip, Functions.DEFAULT_PORT, (int) (tempSlider.getValue() * 100));
+            Functions.setTemp(ip, Functions.DEFAULT_PORT, ((int) tempSlider.getValue() * 100));
             Functions.setBrightness(ip, Functions.DEFAULT_PORT, (int) tempTabBrightnessSlider.getValue());
         }else{
             new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
@@ -323,6 +332,15 @@ public class MainWindowController implements Initializable {
         if(tempTabSelectedLightComboBox.getValue() != null){
             String ip = cBoxItem_Ip.get(tempTabSelectedLightComboBox.getValue());
             Functions.turnOff(ip, Functions.DEFAULT_PORT);
+        }else{
+            new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
+        }
+    }
+
+    public void tempTabTurnOnButtonClick(){
+        if(tempTabSelectedLightComboBox.getValue() != null){
+            String ip = cBoxItem_Ip.get(tempTabSelectedLightComboBox.getValue());
+            Functions.turnOn(ip, Functions.DEFAULT_PORT);
         }else{
             new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
         }
