@@ -22,10 +22,28 @@ public class DataParser {
         return ligthsMap;
     }
 
+    public static Map<String,Boolean> getSettingsFromJson(String path){
+        File settingsJson = new File(path);
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String,Boolean> settingsMap = null;
+        try{
+            settingsMap = mapper.readValue(settingsJson, new TypeReference<>() {
+            });
+        }catch(Exception ex){
+            System.out.println("\033[31mError parsing settings from: " + path);
+            ex.printStackTrace();
+        }
+        return settingsMap;
+    }
+
     public static void main(String[] args) {
-        Map<String,String> lights = getLightsFromJson("data\\lights.json");
-        for(var key : lights.keySet()){
-            System.out.println(key + " : " + lights.get(key));
+//        Map<String,String> lights = getLightsFromJson("data\\lights.json");
+//        for(var key : lights.keySet()){
+//            System.out.println(key + " : " + lights.get(key));
+//        }
+        Map<String,Boolean> settings = getSettingsFromJson("data\\settings.json");
+        for(var key : settings.keySet()){
+            System.out.println(key + " : " + settings.get(key));
         }
     }
 }

@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 
 public class MainWindowController implements Initializable {
     private HashMap<String,String> cBoxItem_Ip = new HashMap<>();
+    private Map<String,Boolean> settings, sessionSettings;
+    private Map<String,String> lights;
 
     @FXML
     private TitledPane tpAddNew, tpEdit, tpAutoscan;
@@ -38,16 +40,19 @@ public class MainWindowController implements Initializable {
     private TextField tfTempTabBrgValue, tfIp, tfAlias, tempTabTempTextField;
 
     @FXML
-    private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnAddWithAlias, btnScan, tempTabSetButton, tempTabTurnOffButton, tempTabTurnOnButton;
+    private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnAddWithAlias, btnScan, tempTabSetButton, tempTabTurnOffButton, tempTabTurnOnButton, settingsTabSaveButton, settingsTabDefaultsButton;
 
     @FXML
-    private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage;
+    private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage, settingsTabMessageLabel;
 
     @FXML
-    public ComboBox<String> cBoxSelectLight, tempTabSelectedLightComboBox;
+    public ComboBox<String> cBoxSelectLight, tempTabSelectedLightComboBox, colorTabSelectedLightComboBox;
 
     @FXML
     public ListView<String> listViewFoundLights;
+
+    @FXML
+    public CheckBox persistLightsCheckBox, automaticAdjustmentCheckBox;
 
     @FXML
     public void brightnessSliderScroll(Event event) {
@@ -121,13 +126,30 @@ public class MainWindowController implements Initializable {
         tfTempTabBrgValue.setText(Integer.toString((int) tempTabBrightnessSlider.getValue()));
         tempTabTempTextField.setText(Integer.toString((int) tempSlider.getValue() * 100));
 
-        Map<String,String> lights = DataParser.getLightsFromJson("data\\lights.json");
+        lights = DataParser.getLightsFromJson("data\\lights.json");
         for(var key : lights.keySet()){
             String cBoxItem = String.format("[%s] [%s]", lights.get(key), key);
             cBoxItem_Ip.put(cBoxItem,key);
             cBoxSelectLight.getItems().add(cBoxItem);
         }
         updateAllComboBoxes(cBoxSelectLight);
+
+        settings = DataParser.getSettingsFromJson("data\\settings.json");
+        for(var key : settings.keySet()){
+            switch (key){
+                case "preserve_lights_on_exit" -> {
+                    if(settings.get(key)){
+                        persistLightsCheckBox.setSelected(true);
+                    }
+                }
+                case "adjust_lights_state_automatically" -> {
+                    if(settings.get(key)){
+                        automaticAdjustmentCheckBox.setSelected(true);
+                    }
+                }
+            }
+        }
+        sessionSettings = settings;
     }
 
 
@@ -143,7 +165,7 @@ public class MainWindowController implements Initializable {
             if(!cBoxItem_Ip.containsKey(item) && !cBoxItem_Ip.containsValue(tfIp.getText())) {
                 cBoxItem_Ip.put(item, tfIp.getText());
                 cBoxSelectLight.getItems().add(item);
-                tempTabSelectedLightComboBox.getItems().add(item);
+                updateAllComboBoxes(cBoxSelectLight);
                 Message msg = new Message(lblAddLightMessage, 2000, "Light added successfully.", Color.GREEN);
                 msg.show();
             }else{
@@ -171,6 +193,9 @@ public class MainWindowController implements Initializable {
     public void updateAllComboBoxes(ComboBox<String> comboBox){
         tempTabSelectedLightComboBox.getItems().clear();
         tempTabSelectedLightComboBox.getItems().addAll(comboBox.getItems());
+        colorTabSelectedLightComboBox.getItems().clear();
+        colorTabSelectedLightComboBox.getItems().addAll(comboBox.getItems());
+        // TODO: update other tabs' combo boxes
     }
 
     public void btnEditClick(ActionEvent e) throws IOException {
@@ -193,7 +218,7 @@ public class MainWindowController implements Initializable {
                 modalStage.setTitle("Edit Light");
                 modalStage.setScene(new Scene(root));
                 modalStage.showAndWait(); // Show the modal stage and block access until it's closed
-                // TODO: update other tabs' comboboxes
+
                 updateAllComboBoxes(cBoxSelectLight);
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -209,7 +234,7 @@ public class MainWindowController implements Initializable {
             String selectedItem = cBoxSelectLight.getValue();
             cBoxItem_Ip.remove(selectedItem);
             cBoxSelectLight.getItems().remove(selectedItem);
-            tempTabSelectedLightComboBox.getItems().remove(selectedItem);
+            updateAllComboBoxes(cBoxSelectLight);
             Message msg = new Message(lblEditLightMessage, 2000, "Item remove successfully.", Color.GREEN);
             msg.show();
         }else{
@@ -221,7 +246,7 @@ public class MainWindowController implements Initializable {
     public void btnRemoveAllClick(){
         if(!cBoxSelectLight.getItems().isEmpty()){
             cBoxSelectLight.getItems().clear();
-            tempTabSelectedLightComboBox.getItems().clear();
+            updateAllComboBoxes(cBoxSelectLight);
             cBoxItem_Ip.clear();
             Message msg = new Message(lblEditLightMessage, 2000, "All items removed successfully.", Color.GREEN);
             msg.show();
@@ -344,5 +369,92 @@ public class MainWindowController implements Initializable {
         }else{
             new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
         }
+    }
+
+    // ----------- COLOR TAB -----------
+
+    public void rSliderDragDetected(){
+
+    }
+
+    public void rSliderMouseDragged(){
+
+    }
+
+    public void rSliderScroll(){
+
+    }
+
+    public void gSliderDragDetected(){
+
+    }
+
+    public void gSliderMouseDragged(){
+
+    }
+
+    public void gSliderScroll(){
+
+    }
+
+    public void bSliderDragDetected(){
+
+    }
+
+    public void bSliderMouseDragged(){
+
+    }
+
+    public void bSliderScroll(){
+
+    }
+
+    public void wSliderDragDetected(){
+
+    }
+
+    public void wSliderMouseDragged(){
+
+    }
+
+    public void wSliderScroll(){
+
+    }
+
+    public void colorTabColorTabBrightnessSliderDragDetected(){
+
+    }
+
+    public void colorTabColorTabBrightnessSliderMouseDragged(){
+
+    }
+
+    public void colorTabColorTabBrightnessScroll(){
+
+    }
+
+    // ----------- SETTINGS TAB -----------
+
+    public void settingsTabSaveButtonClick(){
+
+    }
+
+    public void settingsTabLoadDefaultsButtonClick(){
+
+    }
+
+    public void preserveLightsOnExitCheckBoxCheckedChanged(){
+        boolean checked = persistLightsCheckBox.isSelected();
+        if(Functions.checkIfSettingsHaveChanged(settings, persistLightsCheckBox, automaticAdjustmentCheckBox)){
+            settingsTabMessageLabel.setVisible(true);
+            settingsTabMessageLabel.setTextFill(Color.ORANGERED);
+            settingsTabMessageLabel.setText("There are unsaved changes.");
+        }else{
+            settingsTabMessageLabel.setVisible(false);
+        }
+    }
+
+    public void adjustLightsStateAutomaticallyCheckBoxCheckedChanged(){
+
     }
 }

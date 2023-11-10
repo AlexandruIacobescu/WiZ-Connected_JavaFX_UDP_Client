@@ -1,8 +1,11 @@
 package com.wizclient.wizconnectedclient.classes;
 
+import javafx.scene.control.CheckBox;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Map;
 
 public class Functions {
 
@@ -35,6 +38,8 @@ public class Functions {
             }
         }
     }
+
+    // ----------- LIGHT ADJUSTMENT FUNCTIONS -----------
     public static void setBrightness(String host, int port, int brightness){
         if(brightness < 10 || brightness > 100){
             throw new IllegalArgumentException("brightness value must be integer in [10, 100].");
@@ -67,5 +72,24 @@ public class Functions {
     public static void turnOn(String host, int port){
         String payload = "{\"method\":\"setPilot\",\"params\":{\"state\":true}}";
         sendUdpPayload(host, port, payload);
+    }
+
+    // ----------- CONTROLLER MISC FUNCTIONS -----------
+
+    public static boolean checkIfSettingsHaveChanged(Map<String,Boolean> settings, CheckBox ... checkBoxesInOrder){
+        Map<String,Boolean> defaults = DataParser.getSettingsFromJson("data\\default-settings.json");
+        for(var key : defaults.keySet()){
+            switch(key){
+                case "preserve_lights_on_exit" -> {
+                    if(checkBoxesInOrder[0].isSelected() != defaults.get(key))
+                        return true;
+                }
+                case "adjust_lights_state_automatically" -> {
+                    if(checkBoxesInOrder[1].isSelected() != defaults.get(key))
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 }

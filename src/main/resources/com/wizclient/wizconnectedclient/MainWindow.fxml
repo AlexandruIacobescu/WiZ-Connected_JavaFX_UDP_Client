@@ -2,6 +2,7 @@
 
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
@@ -89,6 +90,11 @@
                            </children></AnchorPane>
                     </content>
                   </Tab>
+                  <Tab text="Presets">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                    </content>
+                  </Tab>
                   <Tab text="Scenes">
                     <content>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
@@ -157,7 +163,18 @@
                 </Tab>
                   <Tab text="Settings">
                     <content>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <CheckBox fx:id="persistLightsCheckBox" layoutX="45.0" layoutY="49.0" mnemonicParsing="false" onAction="#preserveLightsOnExitCheckBoxCheckedChanged" text="Preserve lights on exit" />
+                              <CheckBox fx:id="automaticAdjustmentCheckBox" layoutX="45.0" layoutY="82.0" mnemonicParsing="false" onAction="#adjustLightsStateAutomaticallyCheckBoxCheckedChanged" prefHeight="17.0" prefWidth="214.0" text="Adjust lights state automatically" />
+                              <Button fx:id="settingsTabSaveButton" layoutX="45.0" layoutY="350.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Save" />
+                              <Label fx:id="settingsTabMessageLabel" layoutX="45.0" layoutY="395.0" text="Message" visible="false">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Button fx:id="settingsTabDefaultsButton" layoutX="123.0" layoutY="350.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="95.0" text="Load Defaults" />
+                           </children></AnchorPane>
                     </content>
                   </Tab>
               </tabs>
