@@ -238,7 +238,7 @@ public class MainWindowController implements Initializable {
             cBoxItem_Ip.remove(selectedItem);
             cBoxSelectLight.getItems().remove(selectedItem);
             updateAllComboBoxes(cBoxSelectLight);
-            Message msg = new Message(lblEditLightMessage, 2000, "Item remove successfully.", Color.GREEN);
+            Message msg = new Message(lblEditLightMessage, 2000, "Item removed successfully.", Color.GREEN);
             msg.show();
             tempTabCurrentStateLabel.setVisible(false);
         }else{
@@ -323,7 +323,7 @@ public class MainWindowController implements Initializable {
             }
             updateAllComboBoxes(cBoxSelectLight);
             if(existingFound){
-                new Message(lblAutoScanMessage, 2000, "Lights already added were skipped.", Color.ORANGERED).show();
+                new Message(lblAutoScanMessage, 2000, "Light already added. Skipped.", Color.ORANGERED).show();
             }
             for(var item : removableItems){
                 listViewFoundLights.getItems().remove(item);
@@ -372,7 +372,7 @@ public class MainWindowController implements Initializable {
             try{
                 if(!Functions.isLightOn(ip, Functions.DEFAULT_PORT)) {
                     tempTabCurrentStateLabel.setText("OFF");
-                    tempTabCurrentStateLabel.setTextFill(Color.GREEN);
+                    tempTabCurrentStateLabel.setTextFill(Color.RED);
                     tempTabCurrentStateLabel.setVisible(true);
                 }
             }catch (Exception ignored){}

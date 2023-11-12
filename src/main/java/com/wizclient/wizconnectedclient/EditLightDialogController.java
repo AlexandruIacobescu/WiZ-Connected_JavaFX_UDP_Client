@@ -1,5 +1,6 @@
 package com.wizclient.wizconnectedclient;
 
+import com.wizclient.wizconnectedclient.classes.Functions;
 import com.wizclient.wizconnectedclient.classes.Message;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -52,6 +53,12 @@ public class EditLightDialogController {
         Matcher matcher = pattern.matcher(ipAddress);
 
         if(matcher.matches()){
+            try{
+                Functions.isLightOn(ipTextField.getText(), Functions.DEFAULT_PORT);
+            }catch (Exception ignored){
+                new Message(lblMessage, 3000, "Could not connect to this light.", Color.RED).show();
+                return;
+            }
             comboBox.getItems().remove(String.format("[%s] [%s]", initialAlias, initialIP));
             cBoxItem_Ip.remove(String.format("[%s] [%s]", initialAlias, initialIP));
             String item = String.format("[%s] [%s]", aliasTextField.getText(), ipTextField.getText());
