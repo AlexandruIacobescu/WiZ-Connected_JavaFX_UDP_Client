@@ -43,7 +43,7 @@ public class MainWindowController implements Initializable {
     private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnAddWithAlias, btnScan, tempTabSetButton, tempTabTurnOffButton, tempTabTurnOnButton, settingsTabSaveButton, settingsTabDefaultsButton;
 
     @FXML
-    private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage, settingsTabMessageLabel;
+    private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage, settingsTabMessageLabel, warmestLabel, warmlabel, daylightLabel, coolLabel;
 
     @FXML
     public ComboBox<String> cBoxSelectLight, tempTabSelectedLightComboBox, colorTabSelectedLightComboBox;
@@ -369,6 +369,30 @@ public class MainWindowController implements Initializable {
         }else{
             new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
         }
+    }
+
+    public void warmestLabelClick(){
+        tempSlider.setValue(22);
+        tempTabTempTextField.setText(String.valueOf((int)tempSlider.getValue() * 100));
+    }
+
+    public void warmLabelClick(){
+        tempSlider.setValue(27);
+        tempTabTempTextField.setText(String.valueOf((int)tempSlider.getValue() * 100));
+    }
+
+    public void daylightLabelClick(){
+        tempSlider.setValue(42);
+        tempTabTempTextField.setText(String.valueOf((int)tempSlider.getValue() * 100));
+    }
+
+    public void coolLabelClick(){
+        tempSlider.setValue(65);
+        tempTabTempTextField.setText(String.valueOf((int)tempSlider.getValue() * 100));
+    }
+
+    public void tempSliderClick(){
+        tempTabTempTextField.setText(String.valueOf((int)tempSlider.getValue() * 100));
     }
 
     // ----------- COLOR TAB -----------

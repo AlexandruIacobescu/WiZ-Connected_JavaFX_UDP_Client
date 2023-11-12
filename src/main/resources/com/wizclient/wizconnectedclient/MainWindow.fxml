@@ -28,18 +28,45 @@
                               <Slider fx:id="tempTabBrightnessSlider" layoutX="611.0" layoutY="51.0" majorTickUnit="10.0" min="10.0" minorTickCount="5" onKeyPressed="#tempTabBrightnessSliderDragDetected" onMouseDragged="#tempTabBrightnessSliderDragDetected" onScroll="#brightnessSliderScroll" orientation="VERTICAL" prefHeight="321.0" prefWidth="14.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="10.0" />
                               <Label layoutX="582.0" layoutY="14.0" text="Brightness:" />
                               <TextField fx:id="tfTempTabBrgValue" layoutX="580.0" layoutY="379.0" onAction="#tfTempTabBrgValueTextChanged" prefWidth="62.0" />
-                              <Slider fx:id="tempSlider" blockIncrement="1.0" layoutX="33.0" layoutY="51.0" majorTickUnit="1.0" max="65.0" min="22.0" minorTickCount="1" onKeyPressed="#tempTabTempSliderDragDetected" onMouseDragged="#tempTabTempSliderDragDetected" onScroll="#tempSliderScroll" prefHeight="24.0" prefWidth="450.0" showTickMarks="true" snapToTicks="true" value="22.0" />
-                              <Label layoutX="33.0" layoutY="22.0" text="Temperature (K):" />
-                              <TextField fx:id="tempTabTempTextField" layoutX="483.0" layoutY="50.0" onAction="#tempTabTempTextFieldTextChanged" prefWidth="62.0" />
-                              <ComboBox fx:id="tempTabSelectedLightComboBox" layoutX="33.0" layoutY="124.0" prefHeight="25.0" prefWidth="267.0" />
-                              <Label layoutX="33.0" layoutY="98.0" text="Select Light:" />
+                              <Slider fx:id="tempSlider" blockIncrement="1.0" layoutX="33.0" layoutY="52.0" majorTickUnit="1.0" max="65.0" min="22.0" minorTickCount="1" onKeyPressed="#tempTabTempSliderDragDetected" onMouseClicked="#tempSliderClick" onMouseDragged="#tempTabTempSliderDragDetected" onScroll="#tempSliderScroll" prefHeight="24.0" prefWidth="450.0" showTickMarks="true" snapToTicks="true" value="22.0" />
+                              <Label layoutX="33.0" layoutY="22.0" text="Temperature (K):">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font></Label>
+                              <TextField fx:id="tempTabTempTextField" layoutX="483.0" layoutY="51.0" onAction="#tempTabTempTextFieldTextChanged" prefWidth="62.0" />
+                              <ComboBox fx:id="tempTabSelectedLightComboBox" layoutX="28.0" layoutY="150.0" prefHeight="25.0" prefWidth="267.0" />
+                              <Label layoutX="28.0" layoutY="124.0" text="Select Light:" />
                               <Label fx:id="tempTabMsgLabel" layoutX="37.0" layoutY="396.0" text="Message" visible="false">
                                  <font>
                                     <Font name="System Bold" size="13.0" />
                                  </font></Label>
-                              <Button fx:id="tempTabSetButton" layoutX="309.0" layoutY="124.0" mnemonicParsing="false" onAction="#tempSetButtonClick" prefHeight="25.0" prefWidth="183.0" text="Set" />
-                              <Button fx:id="tempTabTurnOffButton" layoutX="408.0" layoutY="160.0" mnemonicParsing="false" onAction="#tempTabTurnOffButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn Off" />
-                              <Button fx:id="tempTabTurnOnButton" layoutX="310.0" layoutY="160.0" mnemonicParsing="false" onAction="#tempTabTurnOnButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn On" />
+                              <Button fx:id="tempTabSetButton" layoutX="304.0" layoutY="150.0" mnemonicParsing="false" onAction="#tempSetButtonClick" prefHeight="25.0" prefWidth="183.0" text="Set" />
+                              <Button fx:id="tempTabTurnOffButton" layoutX="403.0" layoutY="186.0" mnemonicParsing="false" onAction="#tempTabTurnOffButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn Off" />
+                              <Button fx:id="tempTabTurnOnButton" layoutX="305.0" layoutY="186.0" mnemonicParsing="false" onAction="#tempTabTurnOnButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn On" />
+                              <Label fx:id="warmlabel" layoutX="28.0" layoutY="76.0" onMouseClicked="#warmestLabelClick" prefHeight="17.0" prefWidth="35.0" text="2200">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="76.0" layoutY="76.0" onMouseClicked="#warmLabelClick" prefHeight="17.0" prefWidth="35.0" text="2700">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="227.0" layoutY="76.0" onMouseClicked="#daylightLabelClick" prefHeight="17.0" prefWidth="35.0" text="4200">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label layoutX="451.0" layoutY="76.0" onMouseClicked="#coolLabelClick" prefHeight="17.0" prefWidth="35.0" text="6500">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="warmestLabel" layoutX="9.0" layoutY="93.0" text="Warmest" />
+                              <Label fx:id="warmLabel" layoutX="74.0" layoutY="93.0" text="Warm" />
+                              <Label fx:id="daylightLabel" layoutX="220.0" layoutY="93.0" text="Daylight" />
+                              <Label fx:id="coolLabel" layoutX="453.0" layoutY="93.0" text="Cool" />
                            </children>
                         </AnchorPane>
                   </content>
