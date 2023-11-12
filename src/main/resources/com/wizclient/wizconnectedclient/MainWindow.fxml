@@ -25,16 +25,19 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="445.0" prefWidth="670.0">
                            <children>
-                              <Slider fx:id="tempTabBrightnessSlider" layoutX="611.0" layoutY="51.0" majorTickUnit="10.0" min="10.0" minorTickCount="5" onKeyPressed="#tempTabBrightnessSliderDragDetected" onMouseDragged="#tempTabBrightnessSliderDragDetected" onScroll="#brightnessSliderScroll" orientation="VERTICAL" prefHeight="321.0" prefWidth="14.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="10.0" />
-                              <Label layoutX="582.0" layoutY="14.0" text="Brightness:" />
+                              <Slider fx:id="tempTabBrightnessSlider" layoutX="611.0" layoutY="51.0" majorTickUnit="10.0" min="10.0" minorTickCount="5" onKeyPressed="#tempTabBrightnessSliderDragDetected" onMouseClicked="#tempTabBrightnessSliderClick" onMouseDragged="#tempTabBrightnessSliderDragDetected" onScroll="#brightnessSliderScroll" orientation="VERTICAL" prefHeight="321.0" prefWidth="14.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="10.0" />
+                              <Label layoutX="582.0" layoutY="14.0" text="Brightness:">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font></Label>
                               <TextField fx:id="tfTempTabBrgValue" layoutX="580.0" layoutY="379.0" onAction="#tfTempTabBrgValueTextChanged" prefWidth="62.0" />
                               <Slider fx:id="tempSlider" blockIncrement="1.0" layoutX="33.0" layoutY="52.0" majorTickUnit="1.0" max="65.0" min="22.0" minorTickCount="1" onKeyPressed="#tempTabTempSliderDragDetected" onMouseClicked="#tempSliderClick" onMouseDragged="#tempTabTempSliderDragDetected" onScroll="#tempSliderScroll" prefHeight="24.0" prefWidth="450.0" showTickMarks="true" snapToTicks="true" value="22.0" />
-                              <Label layoutX="33.0" layoutY="22.0" text="Temperature (K):">
+                              <Label layoutX="33.0" layoutY="22.0" text="Temperature (Kelvins):">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font></Label>
                               <TextField fx:id="tempTabTempTextField" layoutX="483.0" layoutY="51.0" onAction="#tempTabTempTextFieldTextChanged" prefWidth="62.0" />
-                              <ComboBox fx:id="tempTabSelectedLightComboBox" layoutX="28.0" layoutY="150.0" prefHeight="25.0" prefWidth="267.0" />
+                              <ComboBox fx:id="tempTabSelectedLightComboBox" layoutX="28.0" layoutY="150.0" onAction="#tempTabComboBoxIndexChanged" prefHeight="25.0" prefWidth="267.0" />
                               <Label layoutX="28.0" layoutY="124.0" text="Select Light:" />
                               <Label fx:id="tempTabMsgLabel" layoutX="37.0" layoutY="396.0" text="Message" visible="false">
                                  <font>
@@ -67,6 +70,12 @@
                               <Label fx:id="warmLabel" layoutX="74.0" layoutY="93.0" text="Warm" />
                               <Label fx:id="daylightLabel" layoutX="220.0" layoutY="93.0" text="Daylight" />
                               <Label fx:id="coolLabel" layoutX="453.0" layoutY="93.0" text="Cool" />
+                              <Label layoutX="28.0" layoutY="190.0" text="Current state:" />
+                              <Label fx:id="tempTabCurrentStateLabel" layoutX="111.0" layoutY="190.0" text="Label" visible="false">
+                                 <font>
+                                    <Font name="System Bold" size="13.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </AnchorPane>
                   </content>

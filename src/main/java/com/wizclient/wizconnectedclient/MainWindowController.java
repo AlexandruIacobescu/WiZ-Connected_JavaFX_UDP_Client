@@ -1,9 +1,6 @@
 package com.wizclient.wizconnectedclient;
 
-import com.wizclient.wizconnectedclient.classes.AutoScan;
-import com.wizclient.wizconnectedclient.classes.DataParser;
-import com.wizclient.wizconnectedclient.classes.Functions;
-import com.wizclient.wizconnectedclient.classes.Message;
+import com.wizclient.wizconnectedclient.classes.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -43,7 +40,7 @@ public class MainWindowController implements Initializable {
     private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnAddWithAlias, btnScan, tempTabSetButton, tempTabTurnOffButton, tempTabTurnOnButton, settingsTabSaveButton, settingsTabDefaultsButton;
 
     @FXML
-    private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage, settingsTabMessageLabel, warmestLabel, warmlabel, daylightLabel, coolLabel;
+    private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage, settingsTabMessageLabel, warmestLabel, warmlabel, daylightLabel, coolLabel, tempTabCurrentStateLabel;
 
     @FXML
     public ComboBox<String> cBoxSelectLight, tempTabSelectedLightComboBox, colorTabSelectedLightComboBox;
@@ -161,6 +158,12 @@ public class MainWindowController implements Initializable {
         Matcher matcher = pattern.matcher(ipAddress);
 
         if (matcher.matches()) {
+            try{
+                Functions.isLightOn(tfIp.getText(), Functions.DEFAULT_PORT);
+            }catch (Exception ignored){
+                new Message(lblAddLightMessage, 3000, "Could not connect to this light.", Color.RED).show();
+                return;
+            }
             String item = String.format("[%s] [%s]", tfAlias.getText(), tfIp.getText());
             if(!cBoxItem_Ip.containsKey(item) && !cBoxItem_Ip.containsValue(tfIp.getText())) {
                 cBoxItem_Ip.put(item, tfIp.getText());
@@ -237,6 +240,7 @@ public class MainWindowController implements Initializable {
             updateAllComboBoxes(cBoxSelectLight);
             Message msg = new Message(lblEditLightMessage, 2000, "Item remove successfully.", Color.GREEN);
             msg.show();
+            tempTabCurrentStateLabel.setVisible(false);
         }else{
             Message msg = new Message(lblEditLightMessage, 2000, "No light source selected.", Color.RED);
             msg.show();
@@ -250,6 +254,7 @@ public class MainWindowController implements Initializable {
             cBoxItem_Ip.clear();
             Message msg = new Message(lblEditLightMessage, 2000, "All items removed successfully.", Color.GREEN);
             msg.show();
+            tempTabCurrentStateLabel.setVisible(false);
         }
         else{
             Message msg = new Message(lblEditLightMessage, 2000, "No items currently added.", Color.ORANGERED);
@@ -348,6 +353,13 @@ public class MainWindowController implements Initializable {
             String ip = cBoxItem_Ip.get(tempTabSelectedLightComboBox.getValue());
             Functions.setTemp(ip, Functions.DEFAULT_PORT, ((int) tempSlider.getValue() * 100));
             Functions.setBrightness(ip, Functions.DEFAULT_PORT, (int) tempTabBrightnessSlider.getValue());
+            try{
+                if(Functions.isLightOn(ip, Functions.DEFAULT_PORT)){
+                    tempTabCurrentStateLabel.setText("ON");
+                    tempTabCurrentStateLabel.setTextFill(Color.GREEN);
+                    tempTabCurrentStateLabel.setVisible(true);
+                }
+            }catch (Exception ignored){}
         }else{
             new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
         }
@@ -357,6 +369,13 @@ public class MainWindowController implements Initializable {
         if(tempTabSelectedLightComboBox.getValue() != null){
             String ip = cBoxItem_Ip.get(tempTabSelectedLightComboBox.getValue());
             Functions.turnOff(ip, Functions.DEFAULT_PORT);
+            try{
+                if(!Functions.isLightOn(ip, Functions.DEFAULT_PORT)) {
+                    tempTabCurrentStateLabel.setText("OFF");
+                    tempTabCurrentStateLabel.setTextFill(Color.GREEN);
+                    tempTabCurrentStateLabel.setVisible(true);
+                }
+            }catch (Exception ignored){}
         }else{
             new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
         }
@@ -366,6 +385,13 @@ public class MainWindowController implements Initializable {
         if(tempTabSelectedLightComboBox.getValue() != null){
             String ip = cBoxItem_Ip.get(tempTabSelectedLightComboBox.getValue());
             Functions.turnOn(ip, Functions.DEFAULT_PORT);
+            try{
+                if(Functions.isLightOn(ip, Functions.DEFAULT_PORT)) {
+                    tempTabCurrentStateLabel.setText("ON");
+                    tempTabCurrentStateLabel.setTextFill(Color.GREEN);
+                    tempTabCurrentStateLabel.setVisible(true);
+                }
+            }catch (Exception ignored){}
         }else{
             new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
         }
@@ -393,6 +419,37 @@ public class MainWindowController implements Initializable {
 
     public void tempSliderClick(){
         tempTabTempTextField.setText(String.valueOf((int)tempSlider.getValue() * 100));
+    }
+
+    public void tempTabBrightnessSliderClick(){
+        tfTempTabBrgValue.setText(String.valueOf((int)tempTabBrightnessSlider.getValue()));
+    }
+
+    public void tempTabComboBoxIndexChanged() {
+        String item = tempTabSelectedLightComboBox.getValue();
+        String ip = cBoxItem_Ip.get(item);
+
+        try{
+            boolean isOn = Functions.isLightOn(ip, Functions.DEFAULT_PORT);
+            if(isOn){
+                tempTabCurrentStateLabel.setTextFill(Color.GREEN);
+                tempTabCurrentStateLabel.setText("ON");
+                tempTabCurrentStateLabel.setVisible(true);
+            }else{
+                tempTabCurrentStateLabel.setTextFill(Color.RED);
+                tempTabCurrentStateLabel.setText("OFF");
+                tempTabCurrentStateLabel.setVisible(true);
+            }
+
+            if(Functions.isLightInTemperatureMode(ip, Functions.DEFAULT_PORT)){
+                int temp = Functions.getCurrentStateTemperatureKelvins(ip, Functions.DEFAULT_PORT);
+                tempSlider.setValue((double) temp / 100);
+                tempTabTempTextField.setText(String.valueOf(temp));
+            }
+            int brightness = Functions.getCurrentStateBrightness(ip, Functions.DEFAULT_PORT);
+            tempTabBrightnessSlider.setValue(brightness);
+            tfTempTabBrgValue.setText(String.valueOf(brightness));
+        }catch(Exception ignored){}
     }
 
     // ----------- COLOR TAB -----------
@@ -469,7 +526,7 @@ public class MainWindowController implements Initializable {
 
     public void preserveLightsOnExitCheckBoxCheckedChanged(){
         boolean checked = persistLightsCheckBox.isSelected();
-        if(Functions.checkIfSettingsHaveChanged(settings, persistLightsCheckBox, automaticAdjustmentCheckBox)){
+        if(Utils.checkIfSettingsHaveChanged(settings, persistLightsCheckBox, automaticAdjustmentCheckBox)){
             settingsTabMessageLabel.setVisible(true);
             settingsTabMessageLabel.setTextFill(Color.ORANGERED);
             settingsTabMessageLabel.setText("There are unsaved changes.");
