@@ -86,7 +86,10 @@
                            <children>
                               <Slider fx:id="colorTabBrightnessSlider" layoutX="611.0" layoutY="51.0" majorTickUnit="10.0" min="10.0" minorTickCount="5" onKeyPressed="#tempTabBrightnessSliderDragDetected" onMouseDragged="#tempTabBrightnessSliderDragDetected" onScroll="#brightnessSliderScroll" orientation="VERTICAL" prefHeight="321.0" prefWidth="14.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="10.0" />
                               <TextField fx:id="brgValueColorTabTextField" layoutX="580.0" layoutY="379.0" onAction="#tfTempTabBrgValueTextChanged" prefWidth="62.0" />
-                              <Label layoutX="582.0" layoutY="14.0" text="Brightness:" />
+                              <Label layoutX="582.0" layoutY="14.0" text="Brightness:">
+                                 <font>
+                                    <Font name="System Bold" size="12.0" />
+                                 </font></Label>
                               <Label layoutX="41.0" layoutY="43.0" text="R" textFill="RED">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
@@ -182,13 +185,12 @@
                                           <Button fx:id="btnScan" layoutX="14.0" layoutY="18.0" mnemonicParsing="false" onAction="#btnScanClick" prefHeight="25.0" prefWidth="296.0" text="Perform Scan" />
                                           <ListView fx:id="listViewFoundLights" layoutX="320.0" layoutY="26.0" prefHeight="144.0" prefWidth="309.0" />
                                           <Label layoutX="320.0" layoutY="10.0" text="Lights Found:" />
-                                          <Button fx:id="btnAddAll" layoutX="14.0" layoutY="55.0" mnemonicParsing="false" onAction="#btnAddAllClick" prefHeight="25.0" prefWidth="73.0" text="Add All" />
-                                          <Button fx:id="btnAddSelected" layoutX="96.0" layoutY="55.0" mnemonicParsing="false" onAction="#setBtnAddSelectedClick" prefHeight="25.0" prefWidth="88.0" text="Add Selected" />
+                                          <Button fx:id="btnAddAll" layoutX="14.0" layoutY="55.0" mnemonicParsing="false" onAction="#btnAddAllClick" prefHeight="25.0" prefWidth="139.0" text="Add All" />
+                                          <Button fx:id="btnAddSelected" layoutX="171.0" layoutY="55.0" mnemonicParsing="false" onAction="#setBtnAddSelectedClick" prefHeight="25.0" prefWidth="139.0" text="Add Selected" />
                                           <Label fx:id="lblAutoScanMessage" layoutX="14.0" layoutY="98.0" text="Message" visible="false">
                                              <font>
                                                 <Font name="System Bold" size="12.0" />
                                              </font></Label>
-                                          <Button fx:id="tnAddWithAlias" layoutX="191.0" layoutY="55.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="118.0" text="Add With Alias" />
                                        </children>
                                     </AnchorPane>
                                 </content>

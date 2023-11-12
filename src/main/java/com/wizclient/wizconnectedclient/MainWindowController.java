@@ -37,7 +37,7 @@ public class MainWindowController implements Initializable {
     private TextField tfTempTabBrgValue, tfIp, tfAlias, tempTabTempTextField;
 
     @FXML
-    private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnAddWithAlias, btnScan, tempTabSetButton, tempTabTurnOffButton, tempTabTurnOnButton, settingsTabSaveButton, settingsTabDefaultsButton;
+    private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnScan, tempTabSetButton, tempTabTurnOffButton, tempTabTurnOnButton, settingsTabSaveButton, settingsTabDefaultsButton;
 
     @FXML
     private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage, settingsTabMessageLabel, warmestLabel, warmlabel, daylightLabel, coolLabel, tempTabCurrentStateLabel;
@@ -283,11 +283,17 @@ public class MainWindowController implements Initializable {
 
     public void btnAddAllClick(){
         boolean existingFound = false;
+        boolean couldNotConnectToSomeLights = false;
         List<String> items = listViewFoundLights.getItems();
         List<String> removableItems = new ArrayList<>();
         if(listViewFoundLights.getItems() != null){
             for(var item : items){
                 if(!cBoxItem_Ip.containsValue(item)){
+                    try{
+                        Functions.isLightOn(item, Functions.DEFAULT_PORT);
+                    }catch (Exception ignored){
+                        couldNotConnectToSomeLights = true;
+                    }
                     cBoxItem_Ip.put(String.format("[%s] [%s]", "", item), item);
                     cBoxSelectLight.getItems().add(String.format("[%s] [%s]", "", item));
                     removableItems.add(item);
@@ -297,8 +303,14 @@ public class MainWindowController implements Initializable {
                 }
             }
             updateAllComboBoxes(cBoxSelectLight);
-            if(existingFound){
+            if(existingFound && !couldNotConnectToSomeLights){
                 new Message(lblAutoScanMessage, 2000, "Lights already added were skipped.", Color.ORANGERED).show();
+            }
+            if(!existingFound && couldNotConnectToSomeLights){
+                new Message(lblAutoScanMessage, 3000, "Could not connect to some lights. Skipped.", Color.ORANGERED).show();
+            }
+            if(existingFound && couldNotConnectToSomeLights){
+                new Message(lblAutoScanMessage, 3000, "Lights already added were skipped.\nCould not connect to some lights. Skipped.", Color.RED).show();
             }
             for(var item : removableItems){
                 listViewFoundLights.getItems().remove(item);
@@ -308,10 +320,16 @@ public class MainWindowController implements Initializable {
 
     public void setBtnAddSelectedClick(){
         boolean existingFound = false;
+        boolean couldNotConnectToSomeLights = false;
         List<String> items = listViewFoundLights.getSelectionModel().getSelectedItems();
         List<String> removableItems = new ArrayList<>();
         if(listViewFoundLights.getItems() != null){
             for(var item : items){
+                try{
+                    Functions.isLightOn(item, Functions.DEFAULT_PORT);
+                }catch(Exception ignored){
+                    couldNotConnectToSomeLights = true;
+                }
                 if(!cBoxItem_Ip.containsValue(item)){
                     cBoxItem_Ip.put(String.format("[%s] [%s]", "", item), item);
                     cBoxSelectLight.getItems().add(String.format("[%s] [%s]", "", item));
@@ -322,8 +340,14 @@ public class MainWindowController implements Initializable {
                 }
             }
             updateAllComboBoxes(cBoxSelectLight);
-            if(existingFound){
+            if(existingFound && !couldNotConnectToSomeLights){
                 new Message(lblAutoScanMessage, 2000, "Light already added. Skipped.", Color.ORANGERED).show();
+            }
+            if(!existingFound && couldNotConnectToSomeLights){
+                new Message(lblAutoScanMessage, 3000, "Could not connect to this light. Skipped.", Color.ORANGERED).show();
+            }
+            if(existingFound && couldNotConnectToSomeLights){
+                new Message(lblAutoScanMessage, 3000, "Light already added. skipped.\nCould not connect to this light. Skipped.", Color.RED).show();
             }
             for(var item : removableItems){
                 listViewFoundLights.getItems().remove(item);
