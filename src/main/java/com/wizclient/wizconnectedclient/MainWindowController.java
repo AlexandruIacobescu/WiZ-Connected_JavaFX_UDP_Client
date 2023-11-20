@@ -10,7 +10,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -18,29 +20,31 @@ import javafx.stage.StageStyle;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainWindowController implements Initializable {
     private HashMap<String,String> cBoxItem_Ip = new HashMap<>();
-    private Map<String,Boolean> settings, sessionSettings;
+    private Map<String,Boolean> settings, pendingSettings;
     private Map<String,String> lights;
 
     @FXML
     private TitledPane tpAddNew, tpEdit, tpAutoscan;
 
     @FXML
-    private Slider tempTabBrightnessSlider, tempSlider;
+    private TabPane tabPane;
 
     @FXML
-    private TextField tfTempTabBrgValue, tfIp, tfAlias, tempTabTempTextField;
+    private Slider tempTabBrightnessSlider, tempSlider, colorTabBrightnessSlider, rSlider, bSlider, gSlider, wSlider;
+
+    @FXML
+    private TextField tempTabBrgValueTextField, tfIp, tfAlias, tempTabTempTextField, colorTabBrgValueTextField, rTextField, gTextField, bTextField, wTextField;
 
     @FXML
     private Button btnAdd, btnRemove, btnRemoveAll, btnEdit, btnAddAll, btnAddSelected, btnScan, tempTabSetButton, tempTabTurnOffButton, tempTabTurnOnButton, settingsTabSaveButton, settingsTabDefaultsButton;
 
     @FXML
-    private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage, settingsTabMessageLabel, warmestLabel, warmlabel, daylightLabel, coolLabel, tempTabCurrentStateLabel;
+    private Label tempTabMsgLabel, lblAddLightMessage, lblEditLightMessage, lblAutoScanMessage, settingsTabMessageLabel, warmestLabel, warmlabel, daylightLabel, coolLabel, tempTabCurrentStateLabel, colorTabMessageLabel, colorTabCurrentStateLabel;
 
     @FXML
     public ComboBox<String> cBoxSelectLight, tempTabSelectedLightComboBox, colorTabSelectedLightComboBox;
@@ -52,7 +56,55 @@ public class MainWindowController implements Initializable {
     public CheckBox persistLightsCheckBox, automaticAdjustmentCheckBox;
 
     @FXML
-    public void brightnessSliderScroll(Event event) {
+    public Rectangle rectangle;
+
+    public void tabPaneTabClick() throws Exception {
+        int tabsCount = tabPane.getTabs().size();
+        for (int i = 0; i <= tabsCount; i++) {
+            boolean isSelected = tabPane.getSelectionModel().isSelected(i);
+            if(isSelected){
+                switch (i){
+                    case 0 -> {
+                        if(tempTabSelectedLightComboBox.getValue() != null) {
+                            String ip = cBoxItem_Ip.get(tempTabSelectedLightComboBox.getValue());
+                            try {
+                                tempTabBrightnessSlider.setValue(Functions.getCurrentStateBrightness(ip, Functions.DEFAULT_PORT));
+                                tempTabBrgValueTextField.setText(String.valueOf((int) tempTabBrightnessSlider.getValue()));
+                            }catch(Exception ignored){
+                                tempTabCurrentStateLabel.setTextFill(Color.DARKORANGE);
+                                tempTabCurrentStateLabel.setText("UNKNOWN");
+                                tempTabCurrentStateLabel.setVisible(true);
+                            }
+                            return;
+                        }
+                    }
+                    case 1 -> {
+                        if(colorTabSelectedLightComboBox.getValue() != null) {
+                            String ip = cBoxItem_Ip.get(colorTabSelectedLightComboBox.getValue());
+                            try {
+                                colorTabBrightnessSlider.setValue(Functions.getCurrentStateBrightness(ip, Functions.DEFAULT_PORT));
+                                colorTabBrgValueTextField.setText(String.valueOf((int) colorTabBrightnessSlider.getValue()));
+                            }catch(Exception ignored){
+                                tempTabCurrentStateLabel.setTextFill(Color.DARKORANGE);
+                                tempTabCurrentStateLabel.setText("UNKNOWN");
+                                tempTabCurrentStateLabel.setVisible(true);
+                            }
+                            return;
+                        }
+                    }
+                    case 2 -> {
+
+                    }
+                    case 3 -> {
+
+                    }
+                }
+            }
+        }
+    }
+
+    @FXML
+    public void tempTabBrightnessSliderScroll(Event event) {
         if (event.getEventType() == javafx.scene.input.ScrollEvent.SCROLL) {
             javafx.scene.input.ScrollEvent scrollEvent = (javafx.scene.input.ScrollEvent) event;
 
@@ -68,6 +120,26 @@ public class MainWindowController implements Initializable {
 
             tempTabBrightnessSlider.setValue(newValue);
             tempTabBrightnessSliderDragDetected();
+        }
+    }
+
+    @FXML
+    public void colorTabBrightnessSliderScroll(Event event) {
+        if (event.getEventType() == javafx.scene.input.ScrollEvent.SCROLL) {
+            javafx.scene.input.ScrollEvent scrollEvent = (javafx.scene.input.ScrollEvent) event;
+
+            double minorTickUnit = colorTabBrightnessSlider.getMinorTickCount();
+            double newValue = colorTabBrightnessSlider.getValue();
+
+            // Adjust the value based on scroll direction and minor tick unit
+            if (scrollEvent.getDeltaY() > 0) {
+                newValue = Math.min(colorTabBrightnessSlider.getMax(), newValue + minorTickUnit);
+            } else if (scrollEvent.getDeltaY() < 0) {
+                newValue = Math.max(colorTabBrightnessSlider.getMin(), newValue - minorTickUnit);
+            }
+
+            colorTabBrightnessSlider.setValue(newValue);
+            colorTabBrightnessSliderDragDetected();
         }
     }
 
@@ -91,9 +163,9 @@ public class MainWindowController implements Initializable {
         }
     }
 
-    public void tfTempTabBrgValueTextChanged() {
+    public void tempTabBrgValueTextFieldTextChanged() {
         try {
-            int value = Integer.parseInt(tfTempTabBrgValue.getText());
+            int value = Integer.parseInt(tempTabBrgValueTextField.getText());
             if (value < 10 || value > 100) {
                 Message msg = new Message(tempTabMsgLabel, 2000, "Only integers in [10, 100] permitted for this field", Color.RED);
                 msg.show();
@@ -107,7 +179,11 @@ public class MainWindowController implements Initializable {
     }
 
     public void tempTabBrightnessSliderDragDetected() {
-        tfTempTabBrgValue.setText(Integer.toString((int) tempTabBrightnessSlider.getValue()));
+        tempTabBrgValueTextField.setText(Integer.toString((int) tempTabBrightnessSlider.getValue()));
+    }
+
+    public void colorTabBrightnessSliderDragDetected() {
+        colorTabBrgValueTextField.setText(Integer.toString((int) colorTabBrightnessSlider.getValue()));
     }
 
     public void tempTabTempSliderDragDetected(){
@@ -120,8 +196,9 @@ public class MainWindowController implements Initializable {
         tpEdit.setCollapsible(false);
         tpAutoscan.setCollapsible(false);
 
-        tfTempTabBrgValue.setText(Integer.toString((int) tempTabBrightnessSlider.getValue()));
+        tempTabBrgValueTextField.setText(Integer.toString((int) tempTabBrightnessSlider.getValue()));
         tempTabTempTextField.setText(Integer.toString((int) tempSlider.getValue() * 100));
+        colorTabBrgValueTextField.setText(String.valueOf((int)colorTabBrightnessSlider.getValue()));
 
         lights = DataParser.getLightsFromJson("data\\lights.json");
         for(var key : lights.keySet()){
@@ -146,7 +223,9 @@ public class MainWindowController implements Initializable {
                 }
             }
         }
-        sessionSettings = settings;
+        pendingSettings = settings;
+
+        rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
     }
 
 
@@ -383,7 +462,11 @@ public class MainWindowController implements Initializable {
                     tempTabCurrentStateLabel.setTextFill(Color.GREEN);
                     tempTabCurrentStateLabel.setVisible(true);
                 }
-            }catch (Exception ignored){}
+            }catch (Exception ignored){
+                tempTabCurrentStateLabel.setTextFill(Color.DARKORANGE);
+                tempTabCurrentStateLabel.setText("UNKNOWN");
+                tempTabCurrentStateLabel.setVisible(true);
+            }
         }else{
             new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
         }
@@ -399,7 +482,11 @@ public class MainWindowController implements Initializable {
                     tempTabCurrentStateLabel.setTextFill(Color.RED);
                     tempTabCurrentStateLabel.setVisible(true);
                 }
-            }catch (Exception ignored){}
+            }catch (Exception ignored){
+                tempTabCurrentStateLabel.setTextFill(Color.DARKORANGE);
+                tempTabCurrentStateLabel.setText("UNKNOWN");
+                tempTabCurrentStateLabel.setVisible(true);
+            }
         }else{
             new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
         }
@@ -415,7 +502,11 @@ public class MainWindowController implements Initializable {
                     tempTabCurrentStateLabel.setTextFill(Color.GREEN);
                     tempTabCurrentStateLabel.setVisible(true);
                 }
-            }catch (Exception ignored){}
+            }catch (Exception ignored){
+                tempTabCurrentStateLabel.setTextFill(Color.DARKORANGE);
+                tempTabCurrentStateLabel.setText("UNKNOWN");
+                tempTabCurrentStateLabel.setVisible(true);
+            }
         }else{
             new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
         }
@@ -446,7 +537,11 @@ public class MainWindowController implements Initializable {
     }
 
     public void tempTabBrightnessSliderClick(){
-        tfTempTabBrgValue.setText(String.valueOf((int)tempTabBrightnessSlider.getValue()));
+        tempTabBrgValueTextField.setText(String.valueOf((int)tempTabBrightnessSlider.getValue()));
+    }
+
+    public void colorTabBrightnessSliderClick(){
+        colorTabBrgValueTextField.setText(String.valueOf((int)colorTabBrightnessSlider.getValue()));
     }
 
     public void tempTabComboBoxIndexChanged() {
@@ -472,70 +567,210 @@ public class MainWindowController implements Initializable {
             }
             int brightness = Functions.getCurrentStateBrightness(ip, Functions.DEFAULT_PORT);
             tempTabBrightnessSlider.setValue(brightness);
-            tfTempTabBrgValue.setText(String.valueOf(brightness));
-        }catch(Exception ignored){}
+            tempTabBrgValueTextField.setText(String.valueOf(brightness));
+        }catch(Exception ignored){
+            tempTabCurrentStateLabel.setTextFill(Color.DARKORANGE);
+            tempTabCurrentStateLabel.setText("UNKNOWN");
+            tempTabCurrentStateLabel.setVisible(true);
+        }
     }
 
     // ----------- COLOR TAB -----------
 
+    public void colorTabBrgValueTextFieldTextChanged(){
+        try {
+            int value = Integer.parseInt(colorTabBrgValueTextField.getText());
+            if (value < 10 || value > 100) {
+                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [10, 100] permitted for this field", Color.RED);
+                msg.show();
+            } else {
+                colorTabBrightnessSlider.setValue(value);
+            }
+        } catch (NumberFormatException ex) {
+            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [10, 100] permitted for this field", Color.RED);
+            msg.show();
+        }
+    }
+
     public void rSliderDragDetected(){
-
+        rTextField.setText(Integer.toString((int) rSlider.getValue()));
+        rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
     }
 
-    public void rSliderMouseDragged(){
-
+    public void rSliderClick(){
+        rTextField.setText(Integer.toString((int) rSlider.getValue()));
+        rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
     }
 
-    public void rSliderScroll(){
+    public void rTextFieldTextChanged(){
+        try {
+            int value = Integer.parseInt(rTextField.getText());
+            if (value < 1 || value > 255) {
+                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+                msg.show();
+            } else {
+                rSlider.setValue(value);
+                rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
+            }
+        } catch (NumberFormatException ex) {
+            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            msg.show();
+        }
+    }
 
+    @FXML
+    public void rSliderScroll(Event event){
+        if (event.getEventType() == javafx.scene.input.ScrollEvent.SCROLL) {
+            javafx.scene.input.ScrollEvent scrollEvent = (javafx.scene.input.ScrollEvent) event;
+
+            double minorTickUnit = rSlider.getMinorTickCount();
+            double newValue = rSlider.getValue();
+
+            if (scrollEvent.getDeltaY() > 0) {
+                newValue = Math.min(rSlider.getMax(), newValue + minorTickUnit);
+            } else if (scrollEvent.getDeltaY() < 0) {
+                newValue = Math.max(rSlider.getMin(), newValue - minorTickUnit);
+            }
+
+            rSlider.setValue(newValue);
+            rSliderDragDetected();
+        }
     }
 
     public void gSliderDragDetected(){
-
+        gTextField.setText(Integer.toString((int) gSlider.getValue()));
+        rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
     }
 
-    public void gSliderMouseDragged(){
-
+    public void gSliderClick(){
+        gTextField.setText(Integer.toString((int) gSlider.getValue()));
+        rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
     }
 
-    public void gSliderScroll(){
+    @FXML
+    public void gSliderScroll(Event event){
+        if (event.getEventType() == javafx.scene.input.ScrollEvent.SCROLL) {
+            javafx.scene.input.ScrollEvent scrollEvent = (javafx.scene.input.ScrollEvent) event;
 
+            double minorTickUnit = gSlider.getMinorTickCount();
+            double newValue = gSlider.getValue();
+
+            // Adjust the value based on scroll direction and minor tick unit
+            if (scrollEvent.getDeltaY() > 0) {
+                newValue = Math.min(gSlider.getMax(), newValue + minorTickUnit);
+            } else if (scrollEvent.getDeltaY() < 0) {
+                newValue = Math.max(gSlider.getMin(), newValue - minorTickUnit);
+            }
+
+            gSlider.setValue(newValue);
+            gSliderDragDetected();
+        }
+    }
+
+    public void gTextFieldTextChanged(){
+        try {
+            int value = Integer.parseInt(gTextField.getText());
+            if (value < 1 || value > 255) {
+                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+                msg.show();
+            } else {
+                gSlider.setValue(value);
+                rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
+            }
+        } catch (NumberFormatException ex) {
+            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            msg.show();
+        }
     }
 
     public void bSliderDragDetected(){
-
+        bTextField.setText(Integer.toString((int) bSlider.getValue()));
+        rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
     }
 
-    public void bSliderMouseDragged(){
-
+    public void bSliderClick(){
+        bTextField.setText(Integer.toString((int) bSlider.getValue()));
+        rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
     }
 
-    public void bSliderScroll(){
+    @FXML
+    public void bSliderScroll(Event event){
+        if (event.getEventType() == javafx.scene.input.ScrollEvent.SCROLL) {
+            javafx.scene.input.ScrollEvent scrollEvent = (javafx.scene.input.ScrollEvent) event;
 
+            double minorTickUnit = bSlider.getMinorTickCount();
+            double newValue = bSlider.getValue();
+
+            // Adjust the value based on scroll direction and minor tick unit
+            if (scrollEvent.getDeltaY() > 0) {
+                newValue = Math.min(bSlider.getMax(), newValue + minorTickUnit);
+            } else if (scrollEvent.getDeltaY() < 0) {
+                newValue = Math.max(bSlider.getMin(), newValue - minorTickUnit);
+            }
+
+            bSlider.setValue(newValue);
+            bSliderDragDetected();
+        }
+    }
+
+    public void bTextFieldTextChanged(){
+        try {
+            int value = Integer.parseInt(bTextField.getText());
+            if (value < 1 || value > 255) {
+                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+                msg.show();
+            } else {
+                bSlider.setValue(value);
+                rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
+            }
+        } catch (NumberFormatException ex) {
+            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            msg.show();
+        }
     }
 
     public void wSliderDragDetected(){
-
+        wTextField.setText(Integer.toString((int) wSlider.getValue()));
     }
 
-    public void wSliderMouseDragged(){
-
+    public void wSliderClick(){
+        wTextField.setText(Integer.toString((int) wSlider.getValue()));
     }
 
-    public void wSliderScroll(){
+    @FXML
+    public void wSliderScroll(Event event){
+        if (event.getEventType() == javafx.scene.input.ScrollEvent.SCROLL) {
+            javafx.scene.input.ScrollEvent scrollEvent = (javafx.scene.input.ScrollEvent) event;
 
+            double minorTickUnit = wSlider.getMinorTickCount();
+            double newValue = wSlider.getValue();
+
+            // Adjust the value based on scroll direction and minor tick unit
+            if (scrollEvent.getDeltaY() > 0) {
+                newValue = Math.min(wSlider.getMax(), newValue + minorTickUnit);
+            } else if (scrollEvent.getDeltaY() < 0) {
+                newValue = Math.max(wSlider.getMin(), newValue - minorTickUnit);
+            }
+
+            wSlider.setValue(newValue);
+            wSliderDragDetected();
+        }
     }
 
-    public void colorTabColorTabBrightnessSliderDragDetected(){
-
-    }
-
-    public void colorTabColorTabBrightnessSliderMouseDragged(){
-
-    }
-
-    public void colorTabColorTabBrightnessScroll(){
-
+    public void wTextFieldTextChanged(){
+        try {
+            int value = Integer.parseInt(wTextField.getText());
+            if (value < 1 || value > 255) {
+                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+                msg.show();
+            } else {
+                wSlider.setValue(value);
+                rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
+            }
+        } catch (NumberFormatException ex) {
+            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            msg.show();
+        }
     }
 
     // ----------- SETTINGS TAB -----------
@@ -554,6 +789,7 @@ public class MainWindowController implements Initializable {
             settingsTabMessageLabel.setVisible(true);
             settingsTabMessageLabel.setTextFill(Color.ORANGERED);
             settingsTabMessageLabel.setText("There are unsaved changes.");
+            // TODO: update pendingSettings
         }else{
             settingsTabMessageLabel.setVisible(false);
         }

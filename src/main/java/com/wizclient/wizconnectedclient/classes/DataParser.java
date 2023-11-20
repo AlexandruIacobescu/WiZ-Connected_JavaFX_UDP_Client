@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import static com.wizclient.wizconnectedclient.classes.Functions.getState;
-
 public class DataParser {
     public static Map<String,String> getLightsFromJson(String path) {
         File lightsJson = new File(path);

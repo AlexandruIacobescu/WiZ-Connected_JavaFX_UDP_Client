@@ -93,7 +93,7 @@ public class Functions {
 
             return new String(receivePacket.getData(), 0, receivePacket.getLength());
         } catch (java.net.SocketTimeoutException e) {
-            throw new Exception("Timeout: No response received within 5 seconds.");
+            throw new Exception("Timeout: No response received within 1 second.");
         } finally {
             socket.close();
         }
@@ -215,12 +215,18 @@ public class Functions {
 
     public static void main(String[] args) throws Exception {
         String ip = "192.168.0.107";
-        Map<String,Object> stateResult = getStateResultMap(getState("192.168.0.107", Functions.DEFAULT_PORT));
+//        Map<String,Object> stateResult = getStateResultMap(getState("192.168.0.107", Functions.DEFAULT_PORT));
+//
+//        for(var k : stateResult.keySet()){
+//            System.out.printf("%s: %s\n", k, stateResult.get(k));
+//        }
+//
+//        System.out.println(getCurrentStateBrightness(ip, Functions.DEFAULT_PORT));
 
-        for(var k : stateResult.keySet()){
-            System.out.printf("%s: %s\n", k, stateResult.get(k));
+        try{
+            isLightOn(ip, DEFAULT_PORT);
+        }catch (Exception ex){
+            ex.printStackTrace();
         }
-
-        System.out.println(getCurrentStateBrightness(ip, Functions.DEFAULT_PORT));
     }
 }
