@@ -51,8 +51,8 @@ public class Functions {
     }
 
     public static void setRGBW(String host, int port, int r, int g, int b, int w){
-        if(!((r >= 1 && r <= 255) && (g >= 1 && g <= 255) && (b >= 1 && b <= 255))){
-            throw new IllegalArgumentException("all R.G.B. values must be integers in [1, 255].");
+        if(!((r >= 0 && r <= 255) && (g >= 0 && g <= 255) && (b >= 0 && b <= 255) && (w >= 0 && w <= 255))){
+            throw new IllegalArgumentException("all R.G.B.W. values must be integers in [0, 255].");
         }
         String payload = String.format("{\"method\":\"setPilot\",\"params\":{\"state\":true,\"r\":%d,\"g\":%d,\"b\":%d,\"w\":%d}}", r, g, b, w);
         sendUdpPayload(host, port, payload);

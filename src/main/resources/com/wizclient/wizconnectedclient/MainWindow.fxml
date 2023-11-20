@@ -111,15 +111,15 @@
                                     <Font name="System Bold" size="12.0" />
                                  </font>
                               </Label>
-                              <Slider fx:id="rSlider" blockIncrement="1.0" layoutX="72.0" layoutY="44.0" majorTickUnit="10.0" max="255.0" min="1.0" minorTickCount="5" onKeyPressed="#rSliderDragDetected" onMouseClicked="#rSliderClick" onMouseDragged="#rSliderDragDetected" onScroll="#rSliderScroll" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" value="1.0" />
-                              <Slider fx:id="gSlider" blockIncrement="1.0" layoutX="72.0" layoutY="83.0" majorTickUnit="10.0" max="255.0" min="1.0" minorTickCount="5" onKeyPressed="#gSliderDragDetected" onMouseClicked="#gSliderClick" onMouseDragged="#gSliderDragDetected" onScroll="#gSliderScroll" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" value="1.0" />
-                              <Slider fx:id="bSlider" blockIncrement="1.0" layoutX="72.0" layoutY="121.0" majorTickUnit="10.0" max="255.0" min="1.0" minorTickCount="5" onKeyPressed="#bSliderDragDetected" onMouseClicked="#bSliderClick" onMouseDragged="#bSliderDragDetected" onScroll="#bSliderScroll" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" value="1.0" />
-                              <Slider fx:id="wSlider" blockIncrement="1.0" layoutX="72.0" layoutY="159.0" majorTickUnit="10.0" max="255.0" min="1.0" minorTickCount="5" onKeyPressed="#wSliderDragDetected" onMouseClicked="#wSliderClick" onMouseDragged="#wSliderDragDetected" onScroll="#wSliderScroll" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" value="1.0" />
-                              <TextField fx:id="rTextField" layoutX="466.0" layoutY="39.0" onAction="#rTextFieldTextChanged" prefHeight="25.0" prefWidth="46.0" text="1" />
-                              <TextField fx:id="gTextField" layoutX="466.0" layoutY="77.0" onAction="#gTextFieldTextChanged" prefHeight="25.0" prefWidth="46.0" text="1" />
-                              <TextField fx:id="bTextField" layoutX="466.0" layoutY="115.0" onAction="#bTextFieldTextChanged" prefHeight="25.0" prefWidth="46.0" text="1" />
-                              <TextField fx:id="wTextField" layoutX="466.0" layoutY="153.0" onAction="#wTextFieldTextChanged" prefHeight="25.0" prefWidth="46.0" text="1" />
-                              <ComboBox fx:id="colorTabSelectedLightComboBox" layoutX="40.0" layoutY="225.0" prefWidth="267.0" />
+                              <Slider fx:id="rSlider" blockIncrement="1.0" layoutX="72.0" layoutY="44.0" majorTickUnit="10.0" max="255.0" minorTickCount="5" onKeyPressed="#rSliderDragDetected" onMouseClicked="#rSliderClick" onMouseDragged="#rSliderDragDetected" onScroll="#rSliderScroll" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" />
+                              <Slider fx:id="gSlider" blockIncrement="1.0" layoutX="72.0" layoutY="83.0" majorTickUnit="10.0" max="255.0" minorTickCount="5" onKeyPressed="#gSliderDragDetected" onMouseClicked="#gSliderClick" onMouseDragged="#gSliderDragDetected" onScroll="#gSliderScroll" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" />
+                              <Slider fx:id="bSlider" blockIncrement="1.0" layoutX="72.0" layoutY="121.0" majorTickUnit="10.0" max="255.0" minorTickCount="5" onKeyPressed="#bSliderDragDetected" onMouseClicked="#bSliderClick" onMouseDragged="#bSliderDragDetected" onScroll="#bSliderScroll" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" />
+                              <Slider fx:id="wSlider" blockIncrement="1.0" layoutX="72.0" layoutY="159.0" majorTickUnit="10.0" max="255.0" minorTickCount="5" onKeyPressed="#wSliderDragDetected" onMouseClicked="#wSliderClick" onMouseDragged="#wSliderDragDetected" onScroll="#wSliderScroll" prefHeight="24.0" prefWidth="394.0" showTickMarks="true" snapToTicks="true" />
+                              <TextField fx:id="rTextField" layoutX="466.0" layoutY="39.0" onAction="#rTextFieldTextChanged" prefHeight="25.0" prefWidth="46.0" text="0" />
+                              <TextField fx:id="gTextField" layoutX="466.0" layoutY="77.0" onAction="#gTextFieldTextChanged" prefHeight="25.0" prefWidth="46.0" text="0" />
+                              <TextField fx:id="bTextField" layoutX="466.0" layoutY="115.0" onAction="#bTextFieldTextChanged" prefHeight="25.0" prefWidth="46.0" text="0" />
+                              <TextField fx:id="wTextField" layoutX="466.0" layoutY="153.0" onAction="#wTextFieldTextChanged" prefHeight="25.0" prefWidth="46.0" text="0" />
+                              <ComboBox fx:id="colorTabSelectedLightComboBox" layoutX="40.0" layoutY="225.0" onAction="#colorTabSelectedLightComboBoxIndexChanged" prefWidth="267.0" />
                               <Label layoutX="40.0" layoutY="203.0" text="Select Light:" />
                               <Label layoutX="40.0" layoutY="263.0" text="Current state: " />
                               <Label fx:id="colorTabMessageLabel" layoutX="48.0" layoutY="396.0" text="Label" visible="false">
@@ -130,12 +130,12 @@
                               <Rectangle fx:id="rectangle" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="57.0" layoutX="330.0" layoutY="192.0" stroke="BLACK" strokeType="INSIDE" width="182.0" />
                               <Label fx:id="colorTabCurrentStateLabel" layoutX="122.0" layoutY="263.0" text="Label" visible="false">
                                  <font>
-                                    <Font size="13.0" />
+                                    <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
-                              <Button fx:id="tempTabSetButton1" layoutX="329.0" layoutY="259.0" mnemonicParsing="false" onAction="#tempSetButtonClick" prefHeight="25.0" prefWidth="183.0" text="Set" />
-                              <Button fx:id="tempTabTurnOnButton1" layoutX="329.0" layoutY="293.0" mnemonicParsing="false" onAction="#tempTabTurnOnButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn On" />
-                              <Button fx:id="tempTabTurnOffButton1" layoutX="428.0" layoutY="293.0" mnemonicParsing="false" onAction="#tempTabTurnOffButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn Off" />
+                              <Button fx:id="colorTabSetButton" layoutX="329.0" layoutY="259.0" mnemonicParsing="false" onAction="#colorSetButtonClick" prefHeight="25.0" prefWidth="183.0" text="Set" />
+                              <Button fx:id="tempTabTurnOnButton1" layoutX="329.0" layoutY="293.0" mnemonicParsing="false" onAction="#colorTabTurnOnButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn On" />
+                              <Button fx:id="tempTabTurnOffButton1" layoutX="428.0" layoutY="293.0" mnemonicParsing="false" onAction="#colorTabTurnOffButtonClick" prefHeight="25.0" prefWidth="84.0" text="Turn Off" />
                            </children></AnchorPane>
                     </content>
                   </Tab>

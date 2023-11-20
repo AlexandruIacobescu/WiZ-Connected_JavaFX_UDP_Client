@@ -605,15 +605,15 @@ public class MainWindowController implements Initializable {
     public void rTextFieldTextChanged(){
         try {
             int value = Integer.parseInt(rTextField.getText());
-            if (value < 1 || value > 255) {
-                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            if (value < 0 || value > 255) {
+                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [0, 255] permitted for this field", Color.RED);
                 msg.show();
             } else {
                 rSlider.setValue(value);
                 rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
             }
         } catch (NumberFormatException ex) {
-            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [0, 255] permitted for this field", Color.RED);
             msg.show();
         }
     }
@@ -670,15 +670,15 @@ public class MainWindowController implements Initializable {
     public void gTextFieldTextChanged(){
         try {
             int value = Integer.parseInt(gTextField.getText());
-            if (value < 1 || value > 255) {
-                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            if (value < 0 || value > 255) {
+                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [0, 255] permitted for this field", Color.RED);
                 msg.show();
             } else {
                 gSlider.setValue(value);
                 rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
             }
         } catch (NumberFormatException ex) {
-            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [0, 255] permitted for this field", Color.RED);
             msg.show();
         }
     }
@@ -716,15 +716,15 @@ public class MainWindowController implements Initializable {
     public void bTextFieldTextChanged(){
         try {
             int value = Integer.parseInt(bTextField.getText());
-            if (value < 1 || value > 255) {
-                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            if (value < 0 || value > 255) {
+                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [0, 255] permitted for this field", Color.RED);
                 msg.show();
             } else {
                 bSlider.setValue(value);
                 rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
             }
         } catch (NumberFormatException ex) {
-            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [0, 255] permitted for this field", Color.RED);
             msg.show();
         }
     }
@@ -760,16 +760,115 @@ public class MainWindowController implements Initializable {
     public void wTextFieldTextChanged(){
         try {
             int value = Integer.parseInt(wTextField.getText());
-            if (value < 1 || value > 255) {
-                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            if (value < 0 || value > 255) {
+                Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [0, 255] permitted for this field", Color.RED);
                 msg.show();
             } else {
                 wSlider.setValue(value);
                 rectangle.setFill(Color.rgb((int)rSlider.getValue(), (int)gSlider.getValue(), (int)bSlider.getValue()));
             }
         } catch (NumberFormatException ex) {
-            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [1, 255] permitted for this field", Color.RED);
+            Message msg = new Message(colorTabMessageLabel, 2000, "Only integers in [0, 255] permitted for this field", Color.RED);
             msg.show();
+        }
+    }
+
+    public void colorTabSelectedLightComboBoxIndexChanged() {
+        String item = colorTabSelectedLightComboBox.getValue();
+        String ip = cBoxItem_Ip.get(item);
+
+        try{
+            boolean isOn = Functions.isLightOn(ip, Functions.DEFAULT_PORT);
+            if(isOn){
+                colorTabCurrentStateLabel.setTextFill(Color.GREEN);
+                colorTabCurrentStateLabel.setText("ON");
+                colorTabCurrentStateLabel.setVisible(true);
+            }else{
+                colorTabCurrentStateLabel.setTextFill(Color.RED);
+                colorTabCurrentStateLabel.setText("OFF");
+                colorTabCurrentStateLabel.setVisible(true);
+            }
+
+            if(Functions.isLightInColorMode(ip, Functions.DEFAULT_PORT)){
+                int[] rgbw = Functions.getCurrentStateColorRGBW(ip, Functions.DEFAULT_PORT);
+                rSlider.setValue(rgbw[0]);
+                rTextField.setText(String.valueOf(rgbw[0]));
+                gSlider.setValue(rgbw[1]);
+                gTextField.setText(String.valueOf(rgbw[1]));
+                bSlider.setValue(rgbw[2]);
+                bTextField.setText(String.valueOf(rgbw[2]));
+                wSlider.setValue(rgbw[3]);
+                wTextField.setText(String.valueOf(rgbw[3]));
+                rectangle.setFill(Color.rgb(rgbw[0], rgbw[1], rgbw[2]));
+            }
+            int brightness = Functions.getCurrentStateBrightness(ip, Functions.DEFAULT_PORT);
+            colorTabBrightnessSlider.setValue(brightness);
+            colorTabBrgValueTextField.setText(String.valueOf(brightness));
+        }catch(Exception ignored){
+            colorTabCurrentStateLabel.setTextFill(Color.DARKORANGE);
+            colorTabCurrentStateLabel.setText("UNKNOWN");
+            colorTabCurrentStateLabel.setVisible(true);
+        }
+    }
+
+    public void colorSetButtonClick(){
+        if(colorTabSelectedLightComboBox.getValue() != null){
+            String ip = cBoxItem_Ip.get(colorTabSelectedLightComboBox.getValue());
+            Functions.setRGBW(ip, Functions.DEFAULT_PORT, (int) rSlider.getValue(), (int) gSlider.getValue(), (int) bSlider.getValue(), (int) wSlider.getValue());
+            Functions.setBrightness(ip, Functions.DEFAULT_PORT, (int) colorTabBrightnessSlider.getValue());
+            try{
+                if(Functions.isLightOn(ip, Functions.DEFAULT_PORT)){
+                    colorTabCurrentStateLabel.setText("ON");
+                    colorTabCurrentStateLabel.setTextFill(Color.GREEN);
+                    colorTabCurrentStateLabel.setVisible(true);
+                }
+            }catch (Exception ignored){
+                colorTabCurrentStateLabel.setTextFill(Color.DARKORANGE);
+                colorTabCurrentStateLabel.setText("UNKNOWN");
+                colorTabCurrentStateLabel.setVisible(true);
+            }
+        }else{
+            new Message(colorTabMessageLabel, 2000, "No light source selected.", Color.RED).show();
+        }
+    }
+
+    public void colorTabTurnOnButtonClick(){
+        if(colorTabSelectedLightComboBox.getValue() != null){
+            String ip = cBoxItem_Ip.get(colorTabSelectedLightComboBox.getValue());
+            Functions.turnOn(ip, Functions.DEFAULT_PORT);
+            try{
+                if(Functions.isLightOn(ip, Functions.DEFAULT_PORT)) {
+                    colorTabCurrentStateLabel.setText("ON");
+                    colorTabCurrentStateLabel.setTextFill(Color.GREEN);
+                    colorTabCurrentStateLabel.setVisible(true);
+                }
+            }catch (Exception ignored){
+                colorTabCurrentStateLabel.setTextFill(Color.DARKORANGE);
+                colorTabCurrentStateLabel.setText("UNKNOWN");
+                colorTabCurrentStateLabel.setVisible(true);
+            }
+        }else{
+            new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
+        }
+    }
+
+    public void colorTabTurnOffButtonClick() {
+        if(colorTabSelectedLightComboBox.getValue() != null){
+            String ip = cBoxItem_Ip.get(colorTabSelectedLightComboBox.getValue());
+            Functions.turnOff(ip, Functions.DEFAULT_PORT);
+            try{
+                if(!Functions.isLightOn(ip, Functions.DEFAULT_PORT)) {
+                    colorTabCurrentStateLabel.setText("OFF");
+                    colorTabCurrentStateLabel.setTextFill(Color.RED);
+                    colorTabCurrentStateLabel.setVisible(true);
+                }
+            }catch (Exception ignored){
+                colorTabCurrentStateLabel.setTextFill(Color.DARKORANGE);
+                colorTabCurrentStateLabel.setText("UNKNOWN");
+                colorTabCurrentStateLabel.setVisible(true);
+            }
+        }else{
+            new Message(tempTabMsgLabel, 2000, "No light source selected.", Color.RED).show();
         }
     }
 
