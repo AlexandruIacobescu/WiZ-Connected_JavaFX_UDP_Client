@@ -75,8 +75,8 @@ public class MainWindowController implements Initializable {
                                 tempTabCurrentStateLabel.setText("UNKNOWN");
                                 tempTabCurrentStateLabel.setVisible(true);
                             }
-                            return;
                         }
+                        return;
                     }
                     case 1 -> {
                         if(colorTabSelectedLightComboBox.getValue() != null) {
@@ -89,8 +89,8 @@ public class MainWindowController implements Initializable {
                                 tempTabCurrentStateLabel.setText("UNKNOWN");
                                 tempTabCurrentStateLabel.setVisible(true);
                             }
-                            return;
                         }
+                        return;
                     }
                     case 2 -> {
 
