@@ -804,7 +804,7 @@ public class MainWindowController implements Initializable {
             int brightness = Functions.getCurrentStateBrightness(ip, Functions.DEFAULT_PORT);
             colorTabBrightnessSlider.setValue(brightness);
             colorTabBrgValueTextField.setText(String.valueOf(brightness));
-        }catch(Exception ignored){
+        } catch(Exception ignored) {
             colorTabCurrentStateLabel.setTextFill(Color.DARKORANGE);
             colorTabCurrentStateLabel.setText("UNKNOWN");
             colorTabCurrentStateLabel.setVisible(true);
